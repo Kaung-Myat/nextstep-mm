@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Offline · NextStep MM</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0c1418;
+        --text: #e8eef1;
+        --muted: #8aa0ab;
+        --accent: #2bb3a3;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        font-family: system-ui, sans-serif;
+        background:
+          radial-gradient(ellipse 80% 50% at 50% -10%, rgba(43, 179, 163, 0.28), transparent 55%),
+          var(--bg);
+        color: var(--text);
+        text-align: center;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      p {
+        margin: 0.75rem 0 0;
+        color: var(--muted);
+        line-height: 1.5;
+        max-width: 28rem;
+      }
+      button {
+        margin-top: 1.5rem;
+        border: 0;
+        border-radius: 999px;
+        padding: 0.75rem 1.25rem;
+        font-weight: 700;
+        background: var(--accent);
+        color: #062622;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>You're offline</h1>
+      <p>NextStep MM needs a connection for roadmaps and market data. Reconnect, then try again.</p>
+      <button type="button" onclick="location.reload()">Retry</button>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "quickPrompts": [
+    "What should I learn after React?",
+    "Am I ready for a frontend internship?",
+    "Which projects should I add to my portfolio?",
+    "Create an 8-week fullstack study plan."
+  ],
+  "defaultActions": [
+    {
+      "title": "Complete your profile",
+      "detail": "Add your current level and internship date for more relevant advice.",
+      "href": "/profile",
+      "linkLabel": "Update profile"
+    },
+    {
+      "title": "Review your roadmap",
+      "detail": "Mark completed topics so the advisor can focus on genuine skill gaps.",
+      "href": "/roadmaps/frontend",
+      "linkLabel": "Open roadmap"
+    },
+    {
+      "title": "Prepare one question",
+      "detail": "Ask about a specific skill, project, or internship goal to get an actionable answer.",
+      "href": "#advisor-input",
+      "linkLabel": "Ask now"
+    }
+  ],
+  "responseSets": [
+    {
+      "keywords": ["react", "learn", "skill"],
+      "response": "After React, focus on the skills that turn components into a complete product: routing and data fetching with Next.js, API integration, form validation, and deployment. Build one small app that uses all four before adding another library. Based on this demo profile, TypeScript and testing should come next—not a new UI framework.",
+      "actions": [
+        {
+          "title": "Build one Next.js feature",
+          "detail": "Add a validated form that reads and writes data through an API route.",
+          "href": "/roadmaps/frontend",
+          "linkLabel": "Review frontend path"
+        },
+        {
+          "title": "Add TypeScript gradually",
+          "detail": "Type component props and API responses in one existing React project.",
+          "href": "/roadmaps/frontend",
+          "linkLabel": "Find the topic"
+        },
+        {
+          "title": "Ship the project",
+          "detail": "Deploy it and document setup, decisions, and limitations in the README.",
+          "href": "/internship-prep",
+          "linkLabel": "Use prep checklist"
+        }
+      ]
+    },
+    {
+      "keywords": ["ready", "internship", "apply"],
+      "response": "You are ready to start applying while you strengthen a few gaps. Your React foundation and two projects are enough for early conversations. Prioritize one deployed project with a polished README, JavaScript fundamentals you can explain aloud, and a one-page resume tailored to frontend internships. Do not wait until every roadmap item is complete.",
+      "actions": [
+        {
+          "title": "Run a project audit",
+          "detail": "Check the core flow, mobile layout, loading states, and README.",
+          "href": "/internship-prep",
+          "linkLabel": "Open checklist"
+        },
+        {
+          "title": "Practice your walkthrough",
+          "detail": "Explain one project from problem to deployment in three minutes.",
+          "href": "/internship-prep",
+          "linkLabel": "Prepare interview"
+        },
+        {
+          "title": "Close one fundamentals gap",
+          "detail": "Review async JavaScript, APIs, and Git before your first interview.",
+          "href": "/roadmaps/frontend",
+          "linkLabel": "Continue roadmap"
+        }
+      ]
+    },
+    {
+      "keywords": ["project", "portfolio"],
+      "response": "Add a project that looks like real product work rather than another tutorial clone. A strong option is an internship application tracker with authentication, filters, form validation, and a responsive dashboard. Show your decisions in a short case study and include a live demo, screenshots, and clear setup steps.",
+      "actions": [
+        {
+          "title": "Define the core flow",
+          "detail": "Start with add, update, filter, and track application status.",
+          "href": "/roadmaps/fullstack",
+          "linkLabel": "Explore fullstack skills"
+        },
+        {
+          "title": "Write a useful README",
+          "detail": "Document the problem, stack, setup, tradeoffs, and next improvements.",
+          "href": "/internship-prep",
+          "linkLabel": "Check GitHub guide"
+        },
+        {
+          "title": "Publish a case study",
+          "detail": "Explain the problem, your approach, and what you learned.",
+          "href": "/internship-prep",
+          "linkLabel": "Check portfolio guide"
+        }
+      ]
+    }
+  ],
+  "fallback": {
+    "response": "A practical next step is to choose one clear internship target, compare its requirements with your current roadmap, and close the smallest important gap through a project. Spend this week producing evidence of one skill—not collecting more tutorials. Then update your GitHub README so a reviewer can understand what you built and why."
+  }
+}

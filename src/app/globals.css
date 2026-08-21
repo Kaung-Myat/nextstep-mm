@@ -1,0 +1,561 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f2f4f6;
+  --background-elevated: #ffffff;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --card-accent: #ffffff;
+  --panel: #f7f8fa;
+  --panel-strong: #e8ecef;
+  --line: rgba(16, 45, 58, 0.08);
+  --line-strong: rgba(16, 45, 58, 0.14);
+  --text: #102d3a;
+  --text-soft: #3d5a68;
+  --text-muted: #7a9099;
+  --accent: #0a7a6f;
+  --accent-strong: #08665d;
+  --accent-soft: rgba(10, 122, 111, 0.12);
+  --accent-foreground: #ffffff;
+  --warm: #d4892a;
+  --success: #1a8a68;
+  --shadow-soft: 0 1px 2px rgba(16, 45, 58, 0.04);
+  --shadow-card: 0 1px 3px rgba(16, 45, 58, 0.06);
+  --radius-app: 1rem;
+  --radius-control: 0.75rem;
+  --tab-height: 3.75rem;
+  --tab-height-lg: 4.25rem;
+  --header-height: 3rem;
+  --app-max: 100%;
+  --app-font-scale: 1;
+  /* Advisor fixed header (title + model) — keep in sync with .advisor-shell top */
+  --advisor-header-offset: calc(4.25rem + env(safe-area-inset-top, 0px));
+}
+
+:root[data-locale="my"] {
+  --tab-height: 4.75rem;
+  --tab-height-lg: 5.25rem;
+}
+
+/* Collapse bottom-nav reserved space while the soft keyboard is open (mobile). */
+@media (max-width: 1023px) {
+  :root[data-keyboard="open"] {
+    --tab-height: 0px;
+    --tab-height-lg: 0px;
+  }
+
+  :root[data-keyboard="open"] .app-main {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0c1418;
+  --background-elevated: #152028;
+  --surface: #152028;
+  --card: #1a2830;
+  --card-accent: #1a2830;
+  --panel: #121c22;
+  --panel-strong: #24323a;
+  --line: rgba(230, 242, 246, 0.08);
+  --line-strong: rgba(230, 242, 246, 0.14);
+  --text: #eef6f8;
+  --text-soft: #b4c8d0;
+  --text-muted: #7f97a1;
+  --accent: #3db8ab;
+  --accent-strong: #58c9bd;
+  --accent-soft: rgba(61, 184, 171, 0.16);
+  --accent-foreground: #04221e;
+  --shadow-soft: none;
+  --shadow-card: none;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-panel: var(--panel);
+  --color-panel-strong: var(--panel-strong);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-soft: var(--text-soft);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-warm: var(--warm);
+  --color-success: var(--success);
+  --font-sans: var(--font-noto-sans), var(--font-noto-myanmar), sans-serif;
+  --font-display: var(--font-noto-sans), var(--font-noto-myanmar), sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: clip;
+  background: var(--background);
+  color: var(--text);
+  font-family: var(--font-noto-sans), var(--font-noto-myanmar), sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root[data-locale="my"] body {
+  font-family: var(--font-noto-myanmar), var(--font-noto-sans), sans-serif;
+  line-height: 1.8;
+}
+
+:root[data-locale="my"] .app-main,
+:root[data-locale="my"] .app-main :where(p, li, label, button, a, span, div, td, th, input, select, textarea) {
+  line-height: 1.8 !important;
+}
+
+:root[data-locale="my"] .app-main :is(h1, h2, h3, h4, h5, h6),
+:root[data-locale="my"] header :is(h1, h2, h3, p, span) {
+  letter-spacing: 0;
+  line-height: 1.6 !important;
+}
+
+:root[data-theme="dark"] [class*="bg-white/"] {
+  background-color: rgba(26, 40, 48, 0.92) !important;
+}
+
+:root[data-theme="dark"] .bg-white {
+  background-color: var(--card) !important;
+}
+
+:root[data-theme="dark"] [class*="border-white/"] {
+  border-color: var(--line) !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: inherit;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+::selection {
+  background: rgba(10, 122, 111, 0.2);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+.app-shell {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100dvh;
+  flex-direction: column;
+  overflow-x: clip;
+  overflow-anchor: none;
+  background: var(--background);
+  zoom: var(--app-font-scale, 1);
+}
+
+@supports not (zoom: 1) {
+  html {
+    font-size: calc(16px * var(--app-font-scale, 1));
+  }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-height: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 4rem;
+  }
+}
+
+.safe-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+.safe-bottom {
+  padding-bottom: max(0.35rem, env(safe-area-inset-bottom));
+}
+
+.app-main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+  padding-bottom: calc(var(--tab-height) + env(safe-area-inset-bottom, 0px) + 1.25rem);
+}
+
+@media (min-width: 640px) {
+  .app-main {
+    padding-bottom: calc(var(--tab-height-lg) + env(safe-area-inset-bottom, 0px) + 1.5rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-main {
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* Advisor: fixed chrome; chat scrolls inside the shell (not the document). */
+.app-main:has([data-advisor-shell]) {
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.advisor-shell {
+  --advisor-footer-offset: calc(var(--tab-height) + env(safe-area-inset-bottom, 0px));
+  position: fixed;
+  inset-inline: 0;
+  top: var(--advisor-header-offset);
+  bottom: var(--advisor-footer-offset);
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--background);
+}
+
+/* Keep advisor app bar height in sync with .advisor-shell top offset */
+.advisor-app-bar {
+  height: var(--advisor-header-offset);
+}
+
+@media (min-width: 640px) {
+  .advisor-shell {
+    --advisor-footer-offset: calc(var(--tab-height-lg) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .advisor-shell {
+    --advisor-footer-offset: 0px;
+  }
+}
+
+.advisor-messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.advisor-composer {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  z-index: 1;
+}
+
+/* Keep Burmese nav labels readable (do not force leading-none / cramped line-height) */
+:root[data-locale="my"] nav[aria-label="Primary"] .nav-tab-label {
+  line-height: 1.5 !important;
+  font-size: inherit;
+}
+
+/* Tab active: circular chip on icon only (not full-height row) */
+.nav-tab {
+  color: var(--text-muted);
+  background: transparent !important;
+}
+
+.nav-tab-icon-wrap {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  background: transparent;
+  transition: background-color 120ms ease;
+}
+
+.nav-tab .nav-tab-icon {
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+.nav-tab[data-active="true"] {
+  color: var(--accent);
+  background: transparent !important;
+}
+
+.nav-tab[data-active="true"] .nav-tab-icon-wrap {
+  background: var(--accent-soft);
+}
+
+.nav-tab[data-active="true"] .nav-tab-icon {
+  stroke-width: 2.2;
+}
+
+.nav-tab[data-active="true"] .nav-tab-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+@media (min-width: 640px) {
+  .nav-tab-icon-wrap {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav-tab-icon-wrap {
+    width: 2.125rem;
+    height: 2.125rem;
+  }
+
+  .nav-tab:hover {
+    color: var(--text);
+  }
+
+  .nav-tab:hover .nav-tab-icon-wrap {
+    background: var(--panel);
+  }
+
+  .nav-tab[data-active="true"]:hover {
+    color: var(--accent);
+  }
+
+  .nav-tab[data-active="true"]:hover .nav-tab-icon-wrap {
+    background: var(--accent-soft);
+  }
+}
+
+.pressable {
+  transition: transform 120ms ease, opacity 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+
+.pressable:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
+
+@keyframes crawl-progress-sheen {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes crawl-step-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.75;
+  }
+}
+
+.crawl-progress-bar {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--color-accent) 70%, white) 0%,
+    var(--color-accent) 45%,
+    color-mix(in oklab, var(--color-accent) 70%, white) 100%
+  );
+  background-size: 200% 100%;
+  animation: crawl-progress-sheen 1.4s linear infinite;
+}
+
+.crawl-step-pulse {
+  animation: crawl-step-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-enter {
+  animation: toast-enter 180ms ease-out;
+}
+
+.splash-screen {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -5%, rgba(43, 179, 163, 0.35), transparent 55%),
+    linear-gradient(165deg, #0c1418 0%, #122028 48%, #0a7a6f 140%);
+}
+
+.splash-screen-pattern {
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+@keyframes splash-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes splash-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.splash-mark {
+  animation: splash-pop 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.splash-title {
+  animation: splash-rise 800ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.splash-sub {
+  animation: splash-rise 800ms 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.splash-bar {
+  animation: splash-rise 700ms 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.splash-bar-fill {
+  animation: splash-slide 1.4s ease-in-out infinite;
+}
+
+.font-scale-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2.5rem;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.font-scale-range:focus-visible {
+  outline: none;
+}
+
+.font-scale-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+.font-scale-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+.font-scale-range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: transparent;
+}
+
+.font-scale-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: -0.425rem;
+  border-radius: 9999px;
+  border: 2px solid var(--surface);
+  background: var(--accent);
+  box-shadow: var(--shadow-soft);
+}
+
+.font-scale-range::-moz-range-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: transparent;
+}
+
+.font-scale-range::-moz-range-thumb {
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid var(--surface);
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

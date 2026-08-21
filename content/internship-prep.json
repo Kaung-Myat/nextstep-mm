@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "checklists": [
+    {
+      "id": "resume",
+      "itemCount": 6
+    },
+    {
+      "id": "portfolio",
+      "itemCount": 6
+    },
+    {
+      "id": "github",
+      "itemCount": 6
+    }
+  ],
+  "copy": {
+    "en": {
+      "checklists": [
+        {
+          "id": "resume",
+          "label": "01 · Resume",
+          "title": "Make your value easy to scan",
+          "description": "Aim for one honest, focused page that a recruiter can understand in under a minute.",
+          "tip": "Tailor your skills and project order to each role—never add a tool you cannot explain.",
+          "items": [
+            "Add a clear target title and working contact links",
+            "Keep education, skills, and projects to one page",
+            "Describe 2–3 projects with action + result bullets",
+            "Name the technologies you actually used",
+            "Export as a clean PDF named Firstname-Lastname-Resume.pdf",
+            "Ask one person to check spelling and link accuracy"
+          ]
+        },
+        {
+          "id": "portfolio",
+          "label": "02 · Portfolio",
+          "title": "Show how you solve problems",
+          "description": "A simple, fast site with strong project stories is more useful than a heavily animated one.",
+          "tip": "For every project, answer: what was the problem, what did you build, and what did you learn?",
+          "items": [
+            "Feature 2–3 complete, relevant projects",
+            "Write a short problem, approach, and outcome for each",
+            "Include live demo and source links",
+            "Use screenshots that work well on mobile",
+            "Add a concise About section and contact method",
+            "Test every page, link, and layout on a phone"
+          ]
+        },
+        {
+          "id": "github",
+          "label": "03 · GitHub",
+          "title": "Make your work easy to explore",
+          "description": "Your profile should help a reviewer quickly find, run, and understand your best code.",
+          "tip": "A useful README and sensible commit history matter more than a perfect contribution graph.",
+          "items": [
+            "Use a professional photo, bio, and contact link",
+            "Pin 3–4 relevant repositories",
+            "Add setup steps, features, stack, and screenshots to READMEs",
+            "Remove secrets, generated files, and broken links",
+            "Use clear repository names and commit messages",
+            "Archive or unpin unfinished tutorial copies"
+          ]
+        }
+      ],
+      "interviewTopics": [
+        {
+          "number": "01",
+          "title": "Your introduction",
+          "detail": "Prepare a 60-second story: who you are, what you build, the role you want, and why this company.",
+          "action": "Record it twice and remove filler words."
+        },
+        {
+          "number": "02",
+          "title": "Project walkthrough",
+          "detail": "Explain one project from problem to deployment, including one tradeoff, one bug, and one lesson.",
+          "action": "Practice a clear 3-minute walkthrough."
+        },
+        {
+          "number": "03",
+          "title": "Technical foundations",
+          "detail": "Review your role basics: JavaScript, web and HTTP, Git, APIs, databases, and debugging.",
+          "action": "Answer out loud without memorized definitions."
+        },
+        {
+          "number": "04",
+          "title": "Behavioral questions",
+          "detail": "Prepare examples of teamwork, learning quickly, receiving feedback, and handling a challenge.",
+          "action": "Use Situation, Action, Result—not a long backstory."
+        }
+      ],
+      "interviewQuestions": [
+        "Tell me about yourself.",
+        "Which project are you most proud of, and why?",
+        "How do you debug something that is not working?",
+        "Tell me about a time you learned a tool quickly.",
+        "Why do you want this internship?"
+      ],
+      "weeklyPlan": [
+        {
+          "week": "1",
+          "title": "Set your direction",
+          "task": "Choose a target role, save 5 relevant job posts, and list repeated requirements.",
+          "outcome": "A role target + skills gap list"
+        },
+        {
+          "week": "2",
+          "title": "Strengthen one project",
+          "task": "Fix its core flow, responsive layout, empty states, and biggest known bug.",
+          "outcome": "One reliable project"
+        },
+        {
+          "week": "3",
+          "title": "Document your work",
+          "task": "Write the README, add screenshots, and make local setup simple.",
+          "outcome": "A reviewer-ready repository"
+        },
+        {
+          "week": "4",
+          "title": "Build your portfolio",
+          "task": "Publish your best work with short case studies and clear contact details.",
+          "outcome": "A live mobile-friendly portfolio"
+        },
+        {
+          "week": "5",
+          "title": "Write your resume",
+          "task": "Draft one page, quantify project outcomes where possible, and get feedback.",
+          "outcome": "A reviewed PDF resume"
+        },
+        {
+          "week": "6",
+          "title": "Review foundations",
+          "task": "Revisit role basics and explain concepts using examples from your own code.",
+          "outcome": "A targeted review sheet"
+        },
+        {
+          "week": "7",
+          "title": "Practice interviews",
+          "task": "Run two mock interviews and rehearse your introduction and project story.",
+          "outcome": "Notes from 2 mock sessions"
+        },
+        {
+          "week": "8",
+          "title": "Apply thoughtfully",
+          "task": "Tailor your resume, verify every link, apply, and track follow-ups.",
+          "outcome": "5 quality applications"
+        }
+      ]
+    },
+    "my": {
+      "checklists": [
+        {
+          "id": "resume",
+          "label": "01 · Resume",
+          "title": "သင့်အရည်အချင်းကို အလွယ်တကူ သိနိုင်အောင် ရေးပါ",
+          "description": "အလုပ်ခန့်သူက တစ်မိနစ်အတွင်း နားလည်နိုင်မည့် ရိုးရှင်း၍ လိုရင်းရောက်သော ကိုယ်ရေးရာဇဝင်တစ်စောင် ဖြစ်အောင် ရေးပါ။",
+          "tip": "လျှောက်မည့်အလုပ်အလိုက် ကျွမ်းကျင်မှုနှင့် ပရောဂျက်အစီအစဉ်ကို ချိန်ညှိပါ—ကိုယ်တိုင် ရှင်းမပြနိုင်သော ကိရိယာများကို မထည့်ပါနှင့်။",
+          "items": [
+            "လျှောက်မည့်ရာထူးအမည်နှင့် ဖွင့်ကြည့်နိုင်သော ဆက်သွယ်ရန်လင့်ခ်များ ထည့်ပါ",
+            "ပညာရေး၊ ကျွမ်းကျင်မှုနှင့် ပရောဂျက်များကို စာမျက်နှာတစ်မျက်နှာအတွင်း ဖော်ပြပါ",
+            "ပရောဂျက် ၂–၃ ခုကို လုပ်ဆောင်ခဲ့သည့်အရာနှင့် ရလဒ်ဖြင့် ဖော်ပြပါ",
+            "အမှန်တကယ် သုံးခဲ့သော နည်းပညာများကို ဖော်ပြပါ",
+            "Firstname-Lastname-Resume.pdf အမည်ဖြင့် သန့်ရှင်းသော PDF ထုတ်ပါ",
+            "စာလုံးပေါင်းနှင့် လင့်ခ်များ မှန်ကန်မှုရှိမရှိ အခြားတစ်ယောက်ကို စစ်ဆေးခိုင်းပါ"
+          ]
+        },
+        {
+          "id": "portfolio",
+          "label": "02 · Portfolio",
+          "title": "ပြဿနာများကို သင်ဖြေရှင်းခဲ့ပုံ ပြပါ",
+          "description": "အလှဆင်ထားရုံမျှသော ဝဘ်ဆိုက်ထက် ပရောဂျက်အကြောင်းကို ရှင်းလင်းစွာ ဖော်ပြထားသည့် ရိုးရှင်းမြန်ဆန်သော ဝဘ်ဆိုက်က ပိုအသုံးဝင်သည်။",
+          "tip": "ပရောဂျက်တိုင်းအတွက် မေးပါ—ပြဿနာကဘာလဲ၊ ဘာတည်ဆောက်ခဲ့လဲ၊ ဘာသင်ယူခဲ့လဲ။",
+          "items": [
+            "ပြီးစီးပြီး သက်ဆိုင်သော ပရောဂျက် ၂–၃ ခု ထားပါ",
+            "တစ်ခုချင်းစီအတွက် ပြဿနာ၊ ဖြေရှင်းပုံနှင့် ရလဒ်ကို အကျဉ်းချုပ်ရေးပါ",
+            "Live demo နှင့် source လင့်ခ်များ ထည့်ပါ",
+            "မိုဘိုင်းဖုန်းတွင်လည်း ရှင်းလင်းစွာ မြင်ရသော screenshot များ သုံးပါ",
+            "About အပိုင်းတိုနှင့် ဆက်သွယ်နည်း ထည့်ပါ",
+            "ဖုန်းပေါ်တွင် စာမျက်နှာ၊ လင့်ခ်နှင့် layout အားလုံး စမ်းပါ"
+          ]
+        },
+        {
+          "id": "github",
+          "label": "03 · GitHub",
+          "title": "သင့်အကောင်းဆုံးလက်ရာများကို အလွယ်တကူ ရှာတွေ့နိုင်အောင် ပြင်ဆင်ပါ",
+          "description": "သင့် GitHub ကို စစ်ဆေးသူက အကောင်းဆုံးကုဒ်ကို လျင်မြန်စွာ ရှာဖွေ၊ စမ်းသပ်ပြီး နားလည်နိုင်ရမည်။",
+          "tip": "Contribution graph ထက် အသုံးဝင်သော README နှင့် နားလည်လွယ်သော commit မှတ်တမ်းက ပိုအရေးကြီးသည်။",
+          "items": [
+            "ပရော်ဖက်ရှင်နယ် ဓာတ်ပုံ၊ bio နှင့် ဆက်သွယ်ရန်လင့်ခ် သုံးပါ",
+            "သက်ဆိုင်သော repo ၃–၄ ခု pin လုပ်ပါ",
+            "README တွင် setup၊ features၊ stack နှင့် screenshot ထည့်ပါ",
+            "လျှို့ဝှက်အချက်အလက်၊ အလိုအလျောက်ထုတ်ထားသော မလိုအပ်သည့်ဖိုင်နှင့် ပျက်နေသောလင့်ခ်များကို ဖယ်ရှားပါ",
+            "ရှင်းလင်းသော repo အမည်နှင့် commit message သုံးပါ",
+            "မပြီးသေးသော tutorial မိတ္တူများကို archive သို့မဟုတ် unpin လုပ်ပါ"
+          ]
+        }
+      ],
+      "interviewTopics": [
+        {
+          "number": "01",
+          "title": "မိမိမိတ်ဆက်",
+          "detail": "စက္ကန့် ၆၀ အတွင်း မိတ်ဆက်နိုင်အောင် ပြင်ဆင်ပါ—သင်ဘယ်သူလဲ၊ ဘာတွေတည်ဆောက်ထားလဲ၊ ဘယ်ရာထူးကို လိုချင်လဲ၊ ဒီကုမ္ပဏီကို ဘာကြောင့် ရွေးချယ်တာလဲ။",
+          "action": "နှစ်ကြိမ် အသံသွင်းကြည့်ပြီး မလိုအပ်သော စကားလုံးများကို ဖယ်ရှားပါ။"
+        },
+        {
+          "number": "02",
+          "title": "ပရောဂျက် ရှင်းပြချက်",
+          "detail": "ပရောဂျက်တစ်ခုကို ပြဿနာမှ deployment အထိ ရှင်းပြပါ—tradeoff တစ်ခု၊ bug တစ်ခု၊ သင်ခန်းစာတစ်ခု ထည့်ပါ။",
+          "action": "၃ မိနစ်အတွင်း ရှင်းလင်းစွာ အဆင့်လိုက်ရှင်းပြနိုင်အောင် လေ့ကျင့်ပါ။"
+        },
+        {
+          "number": "03",
+          "title": "နည်းပညာအခြေခံများ",
+          "detail": "Role အခြေခံများကို ပြန်လည်သုံးသပ်ပါ—JavaScript၊ web/HTTP၊ Git၊ APIs၊ databases နှင့် debugging။",
+          "action": "အလွတ်ကျက်ထားသည့်အတိုင်း မဖြေဘဲ ကိုယ်ပိုင်စကားဖြင့် အသံထွက်၍ လေ့ကျင့်ပါ။"
+        },
+        {
+          "number": "04",
+          "title": "အပြုအမူနှင့် အတွေ့အကြုံဆိုင်ရာ မေးခွန်းများ",
+          "detail": "အဖွဲ့လိုက်လုပ်ဆောင်မှု၊ လျင်မြန်စွာသင်ယူမှု၊ အကြံပြုချက်လက်ခံမှုနှင့် စိန်ခေါ်မှုကို ဖြေရှင်းခဲ့ပုံဆိုင်ရာ ဥပမာများ ပြင်ဆင်ပါ။",
+          "action": "အခြေအနေ၊ လုပ်ဆောင်ချက်နှင့် ရလဒ်အစဉ်ဖြင့် ဖြေပါ—နောက်ခံအကြောင်းကို အလွန်ရှည်စွာ မပြောပါနှင့်။"
+        }
+      ],
+      "interviewQuestions": [
+        "သင့်အကြောင်း ပြောပြပါ။",
+        "ဘယ်ပရောဂျက်ကို အများဆုံး ဂုဏ်ယူသလဲ၊ ဘာကြောင့်လဲ?",
+        "အလုပ်မလုပ်သော ကုဒ် သို့မဟုတ် လုပ်ဆောင်ချက်တစ်ခုကို ဘယ်လို အမှားရှာပြင်ဆင်သလဲ?",
+        "နည်းပညာ သို့မဟုတ် ကိရိယာအသစ်တစ်ခုကို အချိန်တိုအတွင်း သင်ယူခဲ့သည့် အတွေ့အကြုံကို ပြောပြပါ။",
+        "ဒီအလုပ်သင်အခွင့်အရေးကို ဘာကြောင့် လိုချင်တာလဲ?"
+      ],
+      "weeklyPlan": [
+        {
+          "week": "1",
+          "title": "ဦးတည်ချက် သတ်မှတ်ပါ",
+          "task": "ရည်မှန်းထားသော ရာထူးကို ရွေးပါ၊ သက်ဆိုင်သော အလုပ်ခေါ်စာ ၅ ခု သိမ်းပြီး ထပ်ခါတလဲလဲ တွေ့ရသော လိုအပ်ချက်များကို စာရင်းပြုစုပါ။",
+          "outcome": "ရည်မှန်းရာထူးနှင့် လိုအပ်နေသေးသော ကျွမ်းကျင်မှုစာရင်း"
+        },
+        {
+          "week": "2",
+          "title": "ပရောဂျက်တစ်ခု ခိုင်မာအောင်လုပ်ပါ",
+          "task": "Core flow၊ responsive layout၊ empty state နှင့် အကြီးဆုံး bug ကို ပြင်ပါ။",
+          "outcome": "ယုံကြည်ရသော ပရောဂျက်တစ်ခု"
+        },
+        {
+          "week": "3",
+          "title": "သင့်လုပ်ဆောင်မှုကို မှတ်တမ်းတင်ပါ",
+          "task": "README ရေးပါ၊ screenshot ထည့်ပါ၊ ကိုယ်ပိုင်စက်တွင် အလွယ်တကူ စတင်အသုံးပြုနိုင်အောင် ပြင်ဆင်ပါ။",
+          "outcome": "စစ်ဆေးသူအတွက် အသင့်ဖြစ်သော repository"
+        },
+        {
+          "week": "4",
+          "title": "Portfolio တည်ဆောက်ပါ",
+          "task": "အကောင်းဆုံးလက်ရာများကို အကျဉ်းချုပ် case study နှင့် ရှင်းလင်းသော ဆက်သွယ်ရန်အချက်အလက်များဖြင့် ထုတ်ဝေပါ။",
+          "outcome": "မိုဘိုင်းဖုန်းတွင် အဆင်ပြေစွာ အသုံးပြုနိုင်သော portfolio"
+        },
+        {
+          "week": "5",
+          "title": "Resume ရေးပါ",
+          "task": "စာမျက်နှာတစ်ခုရေးပါ၊ ရလဒ်များကို တိုင်းတာနိုင်လျှင် ထည့်ပါ၊ အကြံယူပါ။",
+          "outcome": "စစ်ပြီးသော PDF resume"
+        },
+        {
+          "week": "6",
+          "title": "အခြေခံများ ပြန်လည်သုံးသပ်ပါ",
+          "task": "ရည်မှန်းရာထူးအတွက် အခြေခံများကို ပြန်လေ့လာပြီး ကိုယ်ပိုင်ကုဒ်ဥပမာဖြင့် ရှင်းပြပါ။",
+          "outcome": "လိုအပ်ချက်နှင့် ကိုက်ညီသော ပြန်လည်လေ့လာရေးမှတ်စု"
+        },
+        {
+          "week": "7",
+          "title": "အင်တာဗျူး လေ့ကျင့်ပါ",
+          "task": "အစမ်းအင်တာဗျူး နှစ်ကြိမ်လုပ်ပြီး ကိုယ်ရေးမိတ်ဆက်နှင့် ပရောဂျက်ရှင်းပြပုံကို လေ့ကျင့်ပါ။",
+          "outcome": "အစမ်းအင်တာဗျူးမှ မှတ်စု ၂ စုံ"
+        },
+        {
+          "week": "8",
+          "title": "သေချာပြင်ဆင်ပြီး လျှောက်ထားပါ",
+          "task": "အလုပ်နှင့်ကိုက်ညီအောင် ကိုယ်ရေးရာဇဝင်ကို ပြင်ဆင်ပါ၊ လင့်ခ်အားလုံး စစ်ဆေးပါ၊ လျှောက်ထားပြီး နောက်ဆက်တွဲအခြေအနေကို မှတ်တမ်းတင်ပါ။",
+          "outcome": "သေချာပြင်ဆင်ထားသော လျှောက်လွှာ ၅ စောင်"
+        }
+      ]
+    }
+  }
+}

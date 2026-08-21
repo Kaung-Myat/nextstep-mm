@@ -1,0 +1,342 @@
+{
+  "version": 1,
+  "path": "backend",
+  "slug": "backend",
+  "title": "Backend Developer Roadmap",
+  "summary": "A roadmap for learners who want to build APIs, work with databases, and understand the logic behind production-ready applications.",
+  "audience": "Best for juniors who enjoy data, problem-solving, and the systems that power apps behind the interface.",
+  "sections": [
+    {
+      "slug": "backend-foundations",
+      "title": "Backend Foundations",
+      "description": "Build confidence with JavaScript runtime concepts, server basics, and how the web moves data.",
+      "stage": "beginner",
+      "order": 1,
+      "items": [
+        {
+          "slug": "nodejs-runtime-basics",
+          "title": "Understand Node.js and server-side JavaScript basics",
+          "description": "Learn how Node.js works, how modules are organized, and how to reason about request-response flow.",
+          "difficulty": "beginner",
+          "whyItMatters": "Backend work becomes much easier when you understand the runtime before jumping into frameworks.",
+          "expectedOutcome": "You can explain what a server does and write small scripts or handlers confidently.",
+          "miniProjects": [
+            {
+              "slug": "request-logger-service",
+              "title": "Request Logger Service",
+              "summary": "Build a tiny Node-based service that logs request info and returns simple JSON responses.",
+              "deliverables": [
+                "Basic routing",
+                "JSON responses",
+                "Console-based request inspection"
+              ],
+              "stretchGoals": [
+                "Add environment variables",
+                "Add request timing logs"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "treating-node-like-browser-js",
+              "title": "Assuming server-side JavaScript behaves like browser code",
+              "explanation": "The environment, file access, and performance concerns are different on the server."
+            },
+            {
+              "slug": "copy-paste-server-setup",
+              "title": "Copying server setup without understanding the request lifecycle",
+              "explanation": "That makes debugging middleware, headers, or routing issues much harder later."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "node-learn",
+              "title": "Node.js Learn",
+              "kind": "documentation",
+              "url": "https://nodejs.org/en/learn"
+            },
+            {
+              "slug": "mdn-client-server-overview",
+              "title": "MDN Client-Server Overview",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side/First_steps/Client-Server_overview"
+            }
+          ],
+          "nextTopic": "http-rest-api-basics"
+        },
+        {
+          "slug": "http-rest-api-basics",
+          "title": "Learn HTTP basics and REST API design",
+          "description": "Practice routes, methods, status codes, and how to shape consistent API responses.",
+          "difficulty": "beginner",
+          "whyItMatters": "A junior backend developer needs to think clearly about how clients request and receive data.",
+          "expectedOutcome": "You can build simple CRUD endpoints and explain why your routes and response shapes make sense.",
+          "miniProjects": [
+            {
+              "slug": "bookmarks-api",
+              "title": "Bookmarks API",
+              "summary": "Create a CRUD API for saving, editing, listing, and deleting useful developer resources.",
+              "deliverables": [
+                "REST-style endpoints",
+                "Validation for required fields",
+                "Clear success and error responses"
+              ],
+              "stretchGoals": [
+                "Add pagination",
+                "Add resource tags filtering"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "unclear-response-shapes",
+              "title": "Returning inconsistent response shapes",
+              "explanation": "Inconsistent output makes frontend integration and debugging frustrating."
+            },
+            {
+              "slug": "wrong-status-codes",
+              "title": "Ignoring status code meaning",
+              "explanation": "Using the same status code for every outcome hides what really happened in the request."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "mdn-http",
+              "title": "MDN HTTP Overview",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview"
+            },
+            {
+              "slug": "restful-api-guide",
+              "title": "REST API Tutorial",
+              "kind": "article",
+              "url": "https://restfulapi.net/"
+            }
+          ],
+          "nextTopic": "express-route-architecture"
+        }
+      ]
+    },
+    {
+      "slug": "backend-application-skills",
+      "title": "Application and Database Skills",
+      "description": "Move into real backend application structure with routing, validation, persistence, and authentication.",
+      "stage": "intermediate",
+      "order": 2,
+      "items": [
+        {
+          "slug": "express-route-architecture",
+          "title": "Organize APIs with Express and clear route structure",
+          "description": "Learn how to separate routes, controllers, validation, and shared utilities so projects stay maintainable.",
+          "difficulty": "intermediate",
+          "whyItMatters": "Even small backend projects become hard to manage when everything lives in one file.",
+          "expectedOutcome": "You can structure a multi-route backend app with readable folders and responsibilities.",
+          "miniProjects": [
+            {
+              "slug": "internship-application-service",
+              "title": "Internship Application Service",
+              "summary": "Build a backend for internship applications with routes for submissions, status updates, and filtering.",
+              "deliverables": [
+                "Modular route structure",
+                "Validation middleware",
+                "Error handling strategy"
+              ],
+              "stretchGoals": [
+                "Add admin-only routes",
+                "Add request logging middleware"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "single-file-backend",
+              "title": "Keeping the entire backend in one file",
+              "explanation": "That works briefly, but it becomes hard to reason about responsibilities as features grow."
+            },
+            {
+              "slug": "no-validation-layer",
+              "title": "Trusting every request payload",
+              "explanation": "Backend services need to assume inputs can be incomplete, incorrect, or malicious."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "express-guide",
+              "title": "Express Guide",
+              "kind": "documentation",
+              "url": "https://expressjs.com/en/guide/routing.html"
+            },
+            {
+              "slug": "zod-docs",
+              "title": "Zod Documentation",
+              "kind": "documentation",
+              "url": "https://zod.dev/"
+            }
+          ],
+          "nextTopic": "postgresql-prisma-basics"
+        },
+        {
+          "slug": "postgresql-prisma-basics",
+          "title": "Model data with PostgreSQL and Prisma",
+          "description": "Learn relational thinking, schema design, and how to query application data in a structured way.",
+          "difficulty": "intermediate",
+          "whyItMatters": "A lot of backend internship work involves understanding data relationships more than writing fancy algorithms.",
+          "expectedOutcome": "You can design simple relational tables and connect them to a Node app using Prisma.",
+          "miniProjects": [
+            {
+              "slug": "career-roadmap-db",
+              "title": "Career Roadmap Database",
+              "summary": "Model users, roadmap progress, and skills with a relational schema and simple CRUD operations.",
+              "deliverables": [
+                "Normalized schema",
+                "Prisma queries for create and read flows",
+                "Basic relation handling"
+              ],
+              "stretchGoals": [
+                "Add progress statistics",
+                "Add filtered skill queries"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "database-as-json-bucket",
+              "title": "Treating the database like unstructured JSON storage",
+              "explanation": "That hides relationships that are useful for analytics, filtering, and future features."
+            },
+            {
+              "slug": "skipping-schema-thinking",
+              "title": "Designing tables after coding endpoints",
+              "explanation": "Better schema thinking early makes application logic clearer and more stable."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "prisma-docs",
+              "title": "Prisma Documentation",
+              "kind": "documentation",
+              "url": "https://www.prisma.io/docs"
+            },
+            {
+              "slug": "postgresql-tutorial",
+              "title": "PostgreSQL Tutorial",
+              "kind": "article",
+              "url": "https://www.postgresqltutorial.com/"
+            }
+          ],
+          "nextTopic": "backend-auth-and-deployment"
+        }
+      ]
+    },
+    {
+      "slug": "backend-job-ready",
+      "title": "Reliability and Job-Ready Delivery",
+      "description": "Practice the backend habits that make your work easier to trust in a real internship setting.",
+      "stage": "job-ready",
+      "order": 3,
+      "items": [
+        {
+          "slug": "backend-auth-and-deployment",
+          "title": "Add authentication, environment handling, and deployment basics",
+          "description": "Move beyond local-only development by handling auth, secrets, and deployment setup responsibly.",
+          "difficulty": "advanced",
+          "whyItMatters": "Backend work is often judged by safety and reliability as much as by features.",
+          "expectedOutcome": "You can build a protected backend service and explain how configuration changes between local and deployed environments.",
+          "miniProjects": [
+            {
+              "slug": "protected-jobs-api",
+              "title": "Protected Jobs API",
+              "summary": "Create a backend service with login, protected admin routes, and environment-based configuration.",
+              "deliverables": [
+                "Protected routes",
+                "Environment variable usage",
+                "Basic deployment readiness"
+              ],
+              "stretchGoals": [
+                "Add refresh token strategy notes",
+                "Add deployment checklist documentation"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "hardcoded-secrets",
+              "title": "Hardcoding secrets or database credentials",
+              "explanation": "This is a common beginner mistake and a strong signal that deployment practices still need work."
+            },
+            {
+              "slug": "auth-without-threat-thinking",
+              "title": "Adding auth without thinking about protected behavior",
+              "explanation": "Authentication is not only login screens; it is about deciding what different users can do."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "owasp-authentication",
+              "title": "OWASP Authentication Cheat Sheet",
+              "kind": "article",
+              "url": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html"
+            },
+            {
+              "slug": "node-environment-variables",
+              "title": "Node.js Environment Variables",
+              "kind": "documentation",
+              "url": "https://nodejs.org/api/environment_variables.html"
+            }
+          ],
+          "nextTopic": "backend-debugging-observability"
+        },
+        {
+          "slug": "backend-debugging-observability",
+          "title": "Debug backend issues and communicate system behavior clearly",
+          "description": "Learn to trace errors, inspect logs, and explain how data moves through the system.",
+          "difficulty": "advanced",
+          "whyItMatters": "In internships, being able to investigate and explain a problem is often as valuable as writing new code.",
+          "expectedOutcome": "You can debug backend issues methodically and talk through causes, fixes, and tradeoffs.",
+          "miniProjects": [
+            {
+              "slug": "api-debugging-case-study",
+              "title": "API Debugging Case Study",
+              "summary": "Document a bug in a backend project, the steps you used to trace it, and the final fix.",
+              "deliverables": [
+                "Reproduction notes",
+                "Logs or inspection evidence",
+                "Short root-cause explanation"
+              ],
+              "stretchGoals": [
+                "Add structured logs",
+                "Add one regression test scenario"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "guessing-instead-of-tracing",
+              "title": "Changing code before isolating the problem",
+              "explanation": "Random fixes can hide the bug instead of teaching you where the system failed."
+            },
+            {
+              "slug": "silent-failures",
+              "title": "Returning vague errors with no debugging clues",
+              "explanation": "Good backend systems should help developers learn what went wrong."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "sentry-debugging-guide",
+              "title": "Sentry Debugging Guide",
+              "kind": "article",
+              "url": "https://sentry.io/for/node/"
+            },
+            {
+              "slug": "node-inspector-guide",
+              "title": "Node.js Debugging",
+              "kind": "documentation",
+              "url": "https://nodejs.org/en/learn/getting-started/debugging"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

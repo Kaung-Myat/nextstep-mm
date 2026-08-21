@@ -1,0 +1,47 @@
+{
+  "name": "nextstep-mm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:format": "prisma format",
+    "content:validate": "tsx scripts/validate-content.ts",
+    "db:seed": "tsx prisma/seed.ts",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "jobs:ingest": "tsx scripts/ingest-jobs.ts",
+    "jobs:approve-pending": "tsx scripts/approve-pending-jobs.ts",
+    "jobs:fix-techcareer-urls": "tsx scripts/fix-techcareer-source-urls.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
+    "next": "^16.3.1",
+    "pg": "^8.23.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "dotenv": "^17.2.2",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.1",
+    "prisma": "^7.9.1",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3"
+  }
+}

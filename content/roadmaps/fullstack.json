@@ -1,0 +1,342 @@
+{
+  "version": 1,
+  "path": "fullstack",
+  "slug": "fullstack",
+  "title": "Fullstack Developer Roadmap",
+  "summary": "A balanced path for learners who want to connect frontend experience, backend logic, and product-level delivery in one workflow.",
+  "audience": "Best for juniors who want broader ownership and enjoy seeing how complete features work from UI to database.",
+  "sections": [
+    {
+      "slug": "fullstack-foundations",
+      "title": "Cross-Stack Foundations",
+      "description": "Build enough frontend and backend understanding to think in features instead of isolated code exercises.",
+      "stage": "beginner",
+      "order": 1,
+      "items": [
+        {
+          "slug": "web-flow-and-product-thinking",
+          "title": "Understand how product flows connect frontend, backend, and data",
+          "description": "Learn how a user action moves through UI, API, persistence, and back into the product experience.",
+          "difficulty": "beginner",
+          "whyItMatters": "Fullstack growth starts when you stop thinking of frontend and backend as separate worlds.",
+          "expectedOutcome": "You can explain a feature end to end and identify what happens in each layer.",
+          "miniProjects": [
+            {
+              "slug": "feature-flow-map",
+              "title": "Feature Flow Map",
+              "summary": "Document and implement a small feature flow such as signup, profile editing, or saved jobs.",
+              "deliverables": [
+                "User journey breakdown",
+                "UI-to-API flow explanation",
+                "Basic implementation notes"
+              ],
+              "stretchGoals": [
+                "Add edge cases",
+                "Add a data model sketch"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "layer-blindness",
+              "title": "Only understanding the layer you wrote most recently",
+              "explanation": "Fullstack developers become stronger by tracing a feature through the whole system."
+            },
+            {
+              "slug": "feature-without-user-context",
+              "title": "Thinking only in code tasks, not user outcomes",
+              "explanation": "Good fullstack work connects implementation to the real experience it creates."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "mdn-web-overview",
+              "title": "MDN How the Web Works",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/How_the_Web_works"
+            },
+            {
+              "slug": "system-design-primer-lite",
+              "title": "Beginner System Thinking Articles",
+              "kind": "article",
+              "note": "Use beginner-friendly system overviews, not interview-heavy deep dives at this stage."
+            }
+          ],
+          "nextTopic": "nextjs-fullstack-basics"
+        },
+        {
+          "slug": "nextjs-fullstack-basics",
+          "title": "Use Next.js to connect UI, routes, and server-side behavior",
+          "description": "Learn how a single application can manage pages, shared layouts, forms, and simple server-driven features.",
+          "difficulty": "beginner",
+          "whyItMatters": "A unified fullstack framework helps junior developers practice feature delivery with less setup friction.",
+          "expectedOutcome": "You can build a structured app where UI and backend actions feel connected instead of separate projects.",
+          "miniProjects": [
+            {
+              "slug": "student-portal-foundation",
+              "title": "Student Portal Foundation",
+              "summary": "Build a basic portal with login screens, dashboard routes, and simple form submissions.",
+              "deliverables": [
+                "App routing and layouts",
+                "Form flows",
+                "Shared component structure"
+              ],
+              "stretchGoals": [
+                "Add protected sections",
+                "Add saved preferences"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "fullstack-as-random-features",
+              "title": "Adding many features before understanding one complete flow",
+              "explanation": "A smaller app with one clean end-to-end flow teaches more than many unfinished screens."
+            },
+            {
+              "slug": "unclear-data-boundaries",
+              "title": "Not separating UI concerns from data concerns",
+              "explanation": "That makes debugging and future growth harder even in smaller projects."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "nextjs-app-docs",
+              "title": "Next.js App Documentation",
+              "kind": "documentation",
+              "url": "https://nextjs.org/docs/app"
+            },
+            {
+              "slug": "react-learn",
+              "title": "React Learn",
+              "kind": "documentation",
+              "url": "https://react.dev/learn"
+            }
+          ],
+          "nextTopic": "data-models-and-persistence"
+        }
+      ]
+    },
+    {
+      "slug": "fullstack-application-building",
+      "title": "Application Building",
+      "description": "Start connecting interface, business logic, and persistence into more realistic projects.",
+      "stage": "intermediate",
+      "order": 2,
+      "items": [
+        {
+          "slug": "data-models-and-persistence",
+          "title": "Design data models that support real product flows",
+          "description": "Practice building schemas for users, content, progress, or jobs so features have a strong data foundation.",
+          "difficulty": "intermediate",
+          "whyItMatters": "Fullstack apps feel cleaner when the data model supports the product instead of fighting it.",
+          "expectedOutcome": "You can model feature data clearly and connect it to UI flows without duplicating logic everywhere.",
+          "miniProjects": [
+            {
+              "slug": "mini-roadmap-schema",
+              "title": "Mini Roadmap Schema",
+              "summary": "Design and implement a schema for learning paths, sections, items, and user progress.",
+              "deliverables": [
+                "Relational schema",
+                "Basic create and read operations",
+                "UI view backed by stored data"
+              ],
+              "stretchGoals": [
+                "Add completion analytics",
+                "Add user-specific recommendations"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "feature-before-schema",
+              "title": "Building screens first and data thinking later",
+              "explanation": "That often creates repeated or unclear logic when the app starts to grow."
+            },
+            {
+              "slug": "overcomplicated-schema",
+              "title": "Trying to design a perfect enterprise schema too early",
+              "explanation": "A strong junior project usually needs clear relationships more than maximum complexity."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "prisma-data-guide",
+              "title": "Prisma Data Guide",
+              "kind": "article",
+              "url": "https://www.prisma.io/dataguide"
+            },
+            {
+              "slug": "postgresql-tutorial",
+              "title": "PostgreSQL Tutorial",
+              "kind": "article",
+              "url": "https://www.postgresqltutorial.com/"
+            }
+          ],
+          "nextTopic": "auth-and-user-workflows"
+        },
+        {
+          "slug": "auth-and-user-workflows",
+          "title": "Implement user workflows such as auth, profile updates, and progress tracking",
+          "description": "Build features that reflect how real users move through a product instead of isolated pages.",
+          "difficulty": "intermediate",
+          "whyItMatters": "Internship-ready fullstack projects usually show that you can model real user behavior, not only static data.",
+          "expectedOutcome": "You can build a working user flow from login to action to persisted result.",
+          "miniProjects": [
+            {
+              "slug": "learner-dashboard-flow",
+              "title": "Learner Dashboard Flow",
+              "summary": "Build a flow where users create a profile, choose a path, and save progress on roadmap items.",
+              "deliverables": [
+                "User-focused data flow",
+                "Persisted updates",
+                "Dashboard summary state"
+              ],
+              "stretchGoals": [
+                "Add advisor history",
+                "Add onboarding completion tracking"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "fake-auth-flow",
+              "title": "Showing auth UI without thinking through protected behavior",
+              "explanation": "Fullstack apps should make it clear which actions require identity and why."
+            },
+            {
+              "slug": "detached-dashboard-metrics",
+              "title": "Displaying dashboard numbers that are not connected to real data",
+              "explanation": "It is better to show fewer real summaries than many disconnected placeholders in portfolio work."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "next-auth-concepts",
+              "title": "Auth.js Concepts",
+              "kind": "documentation",
+              "url": "https://authjs.dev/getting-started"
+            },
+            {
+              "slug": "nextjs-forms-mutations",
+              "title": "Next.js Forms and Mutations",
+              "kind": "documentation",
+              "url": "https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations"
+            }
+          ],
+          "nextTopic": "ship-fullstack-portfolio-project"
+        }
+      ]
+    },
+    {
+      "slug": "fullstack-job-ready",
+      "title": "Job-Ready Delivery",
+      "description": "Strengthen the project habits that make a fullstack portfolio feel intentional and internship-ready.",
+      "stage": "job-ready",
+      "order": 3,
+      "items": [
+        {
+          "slug": "ship-fullstack-portfolio-project",
+          "title": "Ship one complete fullstack portfolio project",
+          "description": "Build one app that demonstrates structure, persistence, user flows, and a clear problem it solves.",
+          "difficulty": "advanced",
+          "whyItMatters": "A strong end-to-end project is one of the clearest ways to show readiness for junior or internship roles.",
+          "expectedOutcome": "You can present a complete fullstack project with technical clarity, feature purpose, and deployment readiness.",
+          "miniProjects": [
+            {
+              "slug": "nextstep-style-career-tool",
+              "title": "Career Tool Prototype",
+              "summary": "Build a simple career roadmap product with onboarding, progress saving, and one advisor-style feature.",
+              "deliverables": [
+                "Complete feature flow",
+                "Database-backed content or progress",
+                "Deployment-ready documentation"
+              ],
+              "stretchGoals": [
+                "Add trend summaries",
+                "Add role-based recommendations"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "too-many-half-finished-features",
+              "title": "Adding many features but finishing none of them well",
+              "explanation": "Internship reviewers usually respond better to one strong product flow than many shallow extras."
+            },
+            {
+              "slug": "no-project-story",
+              "title": "Presenting the app without explaining its problem or decisions",
+              "explanation": "A clear story helps others understand why the project matters and what tradeoffs you made."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "vercel-deploy-docs",
+              "title": "Vercel Deployment Docs",
+              "kind": "documentation",
+              "url": "https://vercel.com/docs"
+            },
+            {
+              "slug": "github-docs",
+              "title": "GitHub Docs",
+              "kind": "documentation",
+              "url": "https://docs.github.com/"
+            }
+          ],
+          "nextTopic": "fullstack-quality-and-explanation"
+        },
+        {
+          "slug": "fullstack-quality-and-explanation",
+          "title": "Improve quality, debugging, and technical explanation",
+          "description": "Focus on the habits that make your project easier to review, maintain, and talk about in interviews.",
+          "difficulty": "advanced",
+          "whyItMatters": "Being able to explain architecture and debug fullstack issues is a big part of early-career readiness.",
+          "expectedOutcome": "You can describe how your app is organized, how data flows, and how you solved a meaningful problem.",
+          "miniProjects": [
+            {
+              "slug": "architecture-walkthrough-note",
+              "title": "Architecture Walkthrough Note",
+              "summary": "Write a short technical walkthrough for a fullstack project and improve one weak part based on that review.",
+              "deliverables": [
+                "Architecture summary",
+                "Known tradeoffs",
+                "One documented improvement pass"
+              ],
+              "stretchGoals": [
+                "Add simple test coverage",
+                "Add monitoring or logging notes"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "cannot-explain-decisions",
+              "title": "Using technologies without being able to explain why",
+              "explanation": "It is okay to be junior, but it is important to show reasoning and curiosity about choices."
+            },
+            {
+              "slug": "no-debugging-trail",
+              "title": "Fixing bugs without capturing what you learned",
+              "explanation": "Reflection makes you stronger and gives you better stories for interviews and mentorship conversations."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "react-devtools",
+              "title": "React Developer Tools",
+              "kind": "tool",
+              "url": "https://react.dev/learn/react-developer-tools"
+            },
+            {
+              "slug": "web-dev-performance",
+              "title": "web.dev Performance",
+              "kind": "article",
+              "url": "https://web.dev/performance/"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

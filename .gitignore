@@ -1,0 +1,63 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+
+# production / build
+build/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# misc / OS
+.DS_Store
+Thumbs.db
+*.pem
+*.p12
+*.key
+.tmp-crawl/
+tmp/
+temp/
+
+# debug / logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# env & secrets (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# vercel / deploy
+.vercel
+
+# typescript / editors
+.idea/
+.vscode/
+!.vscode/extensions.json
+.cursor/
+
+# testing
+/playwright-report/
+/test-results/
+/blob-report/
+
+# prisma local sqlite leftovers (project uses Postgres)
+/prisma/dev.db
+/prisma/dev.db-journal
+/prisma/*.db
+/prisma/*.db-journal
+
+# generated (if ever written to disk)
+/src/generated/prisma/
+
+# local uploads / caches
+.cache/
+*.local

@@ -1,0 +1,342 @@
+{
+  "version": 1,
+  "path": "frontend",
+  "slug": "frontend",
+  "title": "Frontend Developer Roadmap",
+  "summary": "A practical path for learners who want to build polished user interfaces, understand browser fundamentals, and prepare strong portfolio projects for internships.",
+  "audience": "Best for juniors who enjoy visual building, interaction design, and turning ideas into usable screens.",
+  "sections": [
+    {
+      "slug": "frontend-foundations",
+      "title": "Frontend Foundations",
+      "description": "Build strong browser, HTML, CSS, and JavaScript fundamentals before rushing into frameworks.",
+      "stage": "beginner",
+      "order": 1,
+      "items": [
+        {
+          "slug": "html-css-layouts",
+          "title": "Master semantic HTML and responsive CSS layouts",
+          "description": "Learn how to structure pages clearly, use semantic tags, and build layouts that adapt well across mobile and desktop screens.",
+          "difficulty": "beginner",
+          "whyItMatters": "A lot of junior frontend problems come from weak layout and structure skills, not from missing frameworks.",
+          "expectedOutcome": "You can build clean landing pages, forms, and dashboards without copying layout code blindly.",
+          "miniProjects": [
+            {
+              "slug": "student-club-landing-page",
+              "title": "Student Club Landing Page",
+              "summary": "Create a responsive landing page for a university coding club with sections, call-to-action areas, and a contact form.",
+              "deliverables": [
+                "Responsive hero and section layout",
+                "Accessible navigation and headings",
+                "Mobile-first spacing and typography"
+              ],
+              "stretchGoals": [
+                "Add a theme toggle",
+                "Add subtle section reveal animations"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "div-everything",
+              "title": "Using generic divs for everything",
+              "explanation": "This makes pages harder to read, maintain, and navigate with assistive technology."
+            },
+            {
+              "slug": "desktop-first-layouts",
+              "title": "Designing only for desktop first",
+              "explanation": "Internship reviewers often check how your pages behave on smaller screens and uneven content lengths."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "mdn-html-basics",
+              "title": "MDN HTML Basics",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started"
+            },
+            {
+              "slug": "mdn-css-layout",
+              "title": "MDN CSS Layout",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout"
+            }
+          ],
+          "nextTopic": "javascript-dom-foundations"
+        },
+        {
+          "slug": "javascript-dom-foundations",
+          "title": "Learn JavaScript fundamentals and DOM interaction",
+          "description": "Get comfortable with variables, functions, arrays, objects, async basics, and connecting JavaScript logic to UI behavior.",
+          "difficulty": "beginner",
+          "whyItMatters": "Without core JavaScript understanding, React often feels like memorizing patterns instead of solving problems.",
+          "expectedOutcome": "You can build interactive components like tabs, filters, and form validation without depending on a framework.",
+          "miniProjects": [
+            {
+              "slug": "budget-tracker-ui",
+              "title": "Simple Budget Tracker UI",
+              "summary": "Create a small budgeting interface where users can add and remove expenses and see totals update in real time.",
+              "deliverables": [
+                "Dynamic list rendering",
+                "Form handling and validation",
+                "Basic local state management"
+              ],
+              "stretchGoals": [
+                "Persist data in local storage",
+                "Add category filtering"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "memorizing-without-building",
+              "title": "Trying to memorize syntax without building",
+              "explanation": "You retain JavaScript faster when each concept is tied to a visible interaction."
+            },
+            {
+              "slug": "ignoring-debugging",
+              "title": "Avoiding debugging tools",
+              "explanation": "Console logging and browser devtools are part of the skill, not a sign of weakness."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "javascript-info-basics",
+              "title": "JavaScript.info",
+              "kind": "article",
+              "url": "https://javascript.info/"
+            },
+            {
+              "slug": "mdn-dom-intro",
+              "title": "MDN DOM Introduction",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction"
+            }
+          ],
+          "nextTopic": "react-component-thinking"
+        }
+      ]
+    },
+    {
+      "slug": "frontend-frameworks",
+      "title": "Framework and Application Skills",
+      "description": "Move from isolated UI exercises to structured applications using React and modern frontend workflows.",
+      "stage": "intermediate",
+      "order": 2,
+      "items": [
+        {
+          "slug": "react-component-thinking",
+          "title": "Build with React using component thinking",
+          "description": "Learn props, state, conditional rendering, forms, lists, and reusable component patterns.",
+          "difficulty": "intermediate",
+          "whyItMatters": "Most frontend internships expect you to work with a component-based mindset, not just static pages.",
+          "expectedOutcome": "You can turn a UI into reusable components and explain your state decisions clearly.",
+          "miniProjects": [
+            {
+              "slug": "study-planner-react",
+              "title": "Study Planner App",
+              "summary": "Build a study planner where users can add learning tasks, filter by priority, and track completion.",
+              "deliverables": [
+                "Reusable cards and buttons",
+                "Controlled forms",
+                "State-driven filters and progress"
+              ],
+              "stretchGoals": [
+                "Add persisted data",
+                "Add a weekly calendar view"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "giant-components",
+              "title": "Putting too much logic in one component",
+              "explanation": "Large components become hard to debug and make future features slower to add."
+            },
+            {
+              "slug": "state-everywhere",
+              "title": "Using state for everything",
+              "explanation": "Some values can be derived directly and do not need separate state variables."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "react-learn",
+              "title": "React Learn",
+              "kind": "documentation",
+              "url": "https://react.dev/learn"
+            },
+            {
+              "slug": "react-thinking-in-react",
+              "title": "Thinking in React",
+              "kind": "article",
+              "url": "https://react.dev/learn/thinking-in-react"
+            }
+          ],
+          "nextTopic": "nextjs-routing-data-fetching"
+        },
+        {
+          "slug": "nextjs-routing-data-fetching",
+          "title": "Use Next.js for routing, layouts, and data-driven pages",
+          "description": "Learn file-based routing, shared layouts, basic server rendering, and how data flows into pages.",
+          "difficulty": "intermediate",
+          "whyItMatters": "Next.js is a practical stack skill for internships and gives structure to portfolio apps.",
+          "expectedOutcome": "You can build a multi-page app with shared layout, navigation, and data-backed sections.",
+          "miniProjects": [
+            {
+              "slug": "internship-board-ui",
+              "title": "Internship Board UI",
+              "summary": "Create a small internship listings app with category pages, a detail page, and a saved-items interaction.",
+              "deliverables": [
+                "Multi-route navigation",
+                "Shared layout and metadata",
+                "Data-driven page rendering"
+              ],
+              "stretchGoals": [
+                "Add search params filtering",
+                "Add optimistic save interactions"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "client-everything",
+              "title": "Making every component client-side by default",
+              "explanation": "That removes some of the performance and simplicity benefits that App Router gives you."
+            },
+            {
+              "slug": "weak-folder-structure",
+              "title": "Letting routes and components grow without structure",
+              "explanation": "A clean route and component structure makes projects easier to explain in interviews."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "nextjs-app-router",
+              "title": "Next.js App Router Documentation",
+              "kind": "documentation",
+              "url": "https://nextjs.org/docs/app"
+            },
+            {
+              "slug": "nextjs-data-fetching",
+              "title": "Next.js Data Fetching Patterns",
+              "kind": "documentation",
+              "url": "https://nextjs.org/docs/app/building-your-application/data-fetching"
+            }
+          ],
+          "nextTopic": "frontend-job-ready-projects"
+        }
+      ]
+    },
+    {
+      "slug": "frontend-job-ready",
+      "title": "Portfolio and Job-Ready Delivery",
+      "description": "Strengthen the practical skills that help your work look ready for internship review.",
+      "stage": "job-ready",
+      "order": 3,
+      "items": [
+        {
+          "slug": "frontend-job-ready-projects",
+          "title": "Ship portfolio projects with polish and clarity",
+          "description": "Improve one or two portfolio projects so they feel complete, understandable, and worth reviewing.",
+          "difficulty": "advanced",
+          "whyItMatters": "A smaller number of well-finished projects is usually more convincing than many unfinished ones.",
+          "expectedOutcome": "You can present a frontend project with clear structure, good README documentation, and strong UX details.",
+          "miniProjects": [
+            {
+              "slug": "portfolio-case-study-upgrade",
+              "title": "Portfolio Case Study Upgrade",
+              "summary": "Take an existing project and improve onboarding, edge cases, empty states, and README explanation.",
+              "deliverables": [
+                "Before and after improvements",
+                "Project setup and usage guide",
+                "Responsive polish and states"
+              ],
+              "stretchGoals": [
+                "Add analytics mock events",
+                "Write a short design tradeoff note"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "unfinished-ux-states",
+              "title": "Ignoring loading, empty, and error states",
+              "explanation": "Reviewers notice when an app only works in the happy path."
+            },
+            {
+              "slug": "weak-readme",
+              "title": "Treating the README like an afterthought",
+              "explanation": "A strong README helps recruiters and mentors understand your thinking quickly."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "github-readme-docs",
+              "title": "GitHub Docs",
+              "kind": "documentation",
+              "url": "https://docs.github.com/"
+            },
+            {
+              "slug": "web-dev-accessibility",
+              "title": "web.dev Accessibility",
+              "kind": "article",
+              "url": "https://web.dev/accessibility/"
+            }
+          ],
+          "nextTopic": "frontend-api-collaboration"
+        },
+        {
+          "slug": "frontend-api-collaboration",
+          "title": "Work with APIs, version control, and team-friendly habits",
+          "description": "Practice integrating APIs, organizing commits, and communicating how features are built.",
+          "difficulty": "advanced",
+          "whyItMatters": "Internships often measure whether you can collaborate and reason about work, not only whether the UI looks nice.",
+          "expectedOutcome": "You can connect a frontend app to an API, explain your implementation, and keep your project history understandable.",
+          "miniProjects": [
+            {
+              "slug": "career-dashboard-integration",
+              "title": "Career Dashboard Integration",
+              "summary": "Connect a frontend dashboard to mock roadmap and jobs data, then document your implementation choices.",
+              "deliverables": [
+                "API-driven UI states",
+                "Well-structured commits",
+                "Short implementation notes"
+              ],
+              "stretchGoals": [
+                "Add role-based filtering",
+                "Add error retry handling"
+              ]
+            }
+          ],
+          "commonMistakes": [
+            {
+              "slug": "copying-api-code",
+              "title": "Using fetch logic you do not really understand",
+              "explanation": "It becomes hard to debug when data shape, loading states, or failures change."
+            },
+            {
+              "slug": "messy-git-history",
+              "title": "Committing large unrelated changes together",
+              "explanation": "Cleaner commit history makes it easier to review your thinking and recover from mistakes."
+            }
+          ],
+          "recommendedResources": [
+            {
+              "slug": "mdn-fetch-api",
+              "title": "MDN Fetch API",
+              "kind": "documentation",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API"
+            },
+            {
+              "slug": "atlassian-git-tutorial",
+              "title": "Atlassian Git Tutorials",
+              "kind": "article",
+              "url": "https://www.atlassian.com/git/tutorials"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
