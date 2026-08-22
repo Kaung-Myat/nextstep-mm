@@ -37,6 +37,7 @@ export function RoadmapsCatalog({
           <Link
             key={roadmap.slug}
             href={`/roadmaps/${roadmap.path}`}
+            prefetch={false}
             className={cn(
               "pressable block w-full rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-card)] p-4",
               roadmap.path === "fullstack" && "border-[color:var(--color-accent-soft)]",

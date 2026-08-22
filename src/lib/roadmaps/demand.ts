@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getPrisma } from "@/lib/db";
+import { getApprovedJobsCached } from "@/lib/jobs/approved-jobs-query";
 import type { MarketRole } from "@/lib/jobs/market-types";
 import { skillDictionary } from "@/lib/jobs/skill-extractor";
 import type { ItemDemand, RoadmapDemandSnapshot } from "@/lib/roadmaps/demand-types";
@@ -40,12 +40,7 @@ export async function getRoadmapDemand(roadmap: RoadmapDefinition): Promise<Road
   if (!process.env.DATABASE_URL) return empty;
 
   try {
-    const jobs = await getPrisma().job.findMany({
-      where: { status: "APPROVED" },
-      include: {
-        skills: { include: { skill: { select: { slug: true, name: true } } } },
-      },
-    });
+    const jobs = await getApprovedJobsCached();
 
     const roleJobs = jobs.filter((job) => {
       const skillNames = job.skills.map((link) => link.skill.name);

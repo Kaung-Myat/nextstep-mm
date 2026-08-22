@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState, useTransition } from "react";
 
 import { setRoadmapItemCompletion } from "@/app/roadmaps/actions";
 import { usePreferences } from "@/components/preferences/preferences-provider";
@@ -33,6 +34,7 @@ export function RoadmapScreen({
   paths,
   demand,
 }: RoadmapScreenProps) {
+  const router = useRouter();
   const { copy } = usePreferences();
   const ui = copy.roadmapDetail;
   const [completed, setCompleted] = useState(initialCompletedItemSlugs);
@@ -40,7 +42,17 @@ export function RoadmapScreen({
   const [activeSection, setActiveSection] = useState(roadmap.sections[0]?.slug ?? "");
   const [sortMode, setSortMode] = useState<SortMode>("learning");
   const [error, setError] = useState("");
-  const [pending, startTransition] = useTransition();
+  const [navPending, startNavTransition] = useTransition();
+  const [savePending, startSaveTransition] = useTransition();
+
+  useEffect(() => {
+    setCompleted(initialCompletedItemSlugs);
+    setActiveSection(roadmap.sections[0]?.slug ?? "");
+    setOpenItem(null);
+    setError("");
+  }, [roadmap.path, roadmap.sections, initialCompletedItemSlugs]);
+
+  const completedSet = useMemo(() => new Set(completed), [completed]);
 
   const totalItems = useMemo(
     () => roadmap.sections.reduce((count, section) => count + section.items.length, 0),
@@ -79,18 +91,25 @@ export function RoadmapScreen({
     });
   }, [demand.byItemSlug, roadmap.sections, section?.slug, sortMode]);
 
+  function switchPath(nextPath: string) {
+    if (nextPath === roadmap.path || navPending) return;
+    startNavTransition(() => {
+      router.push(`/roadmaps/${nextPath}`);
+    });
+  }
+
   function setMode(next: SortMode) {
     setSortMode(next);
     setOpenItem(null);
   }
 
   function toggleComplete(itemSlug: string) {
-    const wasCompleted = completed.includes(itemSlug);
+    const wasCompleted = completedSet.has(itemSlug);
     setCompleted((current) =>
       wasCompleted ? current.filter((slug) => slug !== itemSlug) : [...current, itemSlug],
     );
     setError("");
-    startTransition(async () => {
+    startSaveTransition(async () => {
       try {
         await setRoadmapItemCompletion(roadmap.path, itemSlug, !wasCompleted);
       } catch {
@@ -103,7 +122,7 @@ export function RoadmapScreen({
   }
 
   return (
-    <div className="w-full max-w-full safe-top">
+    <div className={cn("w-full max-w-full safe-top", navPending && "pointer-events-none")}>
       <div className="border-b border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-4 pb-4 pt-3 sm:px-6 lg:px-8">
         <div className="flex items-start gap-3">
           <Link
@@ -134,26 +153,34 @@ export function RoadmapScreen({
             <span className="font-bold text-[color:var(--color-accent)]">{percentage}%</span>
           </div>
           <ProgressBar value={percentage} />
+          {navPending ? (
+            <p className="text-[11px] font-medium text-[color:var(--color-accent)]" role="status">
+              {copy.common.loadingPage}
+            </p>
+          ) : null}
         </div>
 
         {paths.length > 1 ? (
-          <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar">
+          <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar" aria-busy={navPending}>
             {paths.map((entry) => {
               const selected = entry.path === roadmap.path;
               return (
-                <Link
+                <button
                   key={entry.path}
-                  href={`/roadmaps/${entry.path}`}
+                  type="button"
                   aria-current={selected ? "page" : undefined}
+                  disabled={navPending && !selected}
+                  onClick={() => switchPath(entry.path)}
                   className={cn(
                     "pressable shrink-0 rounded-full px-3.5 py-2 text-[12px] font-semibold transition-colors",
                     selected
                       ? "bg-[color:var(--color-accent)] text-[color:var(--color-accent-foreground)]"
                       : "bg-[color:var(--color-panel)] text-[color:var(--color-text-soft)]",
+                    navPending && !selected && "opacity-50",
                   )}
                 >
                   {entry.title}
-                </Link>
+                </button>
               );
             })}
           </div>
@@ -192,7 +219,7 @@ export function RoadmapScreen({
         {sortMode === "learning" ? (
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {roadmap.sections.map((entry) => {
-              const done = entry.items.filter((item) => completed.includes(item.slug)).length;
+              const done = entry.items.filter((item) => completedSet.has(item.slug)).length;
               const selected = entry.slug === section?.slug;
               return (
                 <button
@@ -249,13 +276,13 @@ export function RoadmapScreen({
           </p>
         </div>
 
-        <div className={cn("divide-y divide-[color:var(--color-line)] overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-card)]", pending && "opacity-80")}>
+        <div className={cn("divide-y divide-[color:var(--color-line)] overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-card)]", (savePending || navPending) && "opacity-80")}>
           {allRankedItems.map((entry, index) => (
             <RoadmapAccordionRow
               key={entry.item.slug}
               item={entry.item}
               index={index + 1}
-              completed={completed.includes(entry.item.slug)}
+              completed={completedSet.has(entry.item.slug)}
               open={openItem === entry.item.slug}
               demand={demand.byItemSlug[entry.item.slug]}
               sectionLabel={sortMode === "demand" ? formatMessage(ui.fromSection, { section: entry.sectionTitle }) : undefined}
@@ -276,7 +303,7 @@ export function RoadmapScreen({
                 resourcesLabel={ui.resources}
                 onToggleOpen={() => setOpenItem((current) => (current === entry.item.slug ? null : entry.item.slug))}
                 onToggleComplete={() => toggleComplete(entry.item.slug)}
-                pending={pending}
+                pending={savePending}
               />
             ))}
           </div>

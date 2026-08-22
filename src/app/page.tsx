@@ -6,8 +6,7 @@ import {
   internshipCategoryCounts,
 } from "@/lib/internship-prep";
 import { getCompletedInternshipItemKeys } from "@/lib/internship-prep-progress";
-import { listApprovedMarketJobs } from "@/lib/jobs/market";
-import { rankSkills } from "@/lib/jobs/market-types";
+import { getApprovedJobCount, getMarketSkillHighlights } from "@/lib/jobs/market";
 import { getCurrentProfile } from "@/lib/profile";
 import { getCompletedItemSlugs } from "@/lib/roadmap-progress";
 import { getRoadmapByPath, type RoadmapPath } from "@/lib/roadmaps";
@@ -19,11 +18,11 @@ export default async function HomePage() {
   if (!profile) redirect("/onboarding");
 
   const path: RoadmapPath = profile?.targetRole ? rolePaths[profile.targetRole] : "frontend";
-  const [roadmap, completed, prepKeys, marketJobs, checklistDefinitions] = await Promise.all([
+  const [roadmap, completed, prepKeys, marketSkills, checklistDefinitions] = await Promise.all([
     getRoadmapByPath(path),
     getCompletedItemSlugs(path),
     getCompletedInternshipItemKeys(),
-    listApprovedMarketJobs(),
+    getMarketSkillHighlights(4),
     getInternshipChecklistDefinitions(),
   ]);
 
@@ -38,7 +37,7 @@ export default async function HomePage() {
       year: "numeric",
     }) ?? null;
   const prepCounts = internshipCategoryCounts(checklistDefinitions, prepKeys);
-  const marketSkills = rankSkills(marketJobs, 4).map((skill) => ({ name: skill.name, share: skill.share }));
+  const marketSkillCards = marketSkills.map((skill) => ({ name: skill.name, share: skill.share }));
 
   return (
     <HomeDashboard
@@ -52,7 +51,7 @@ export default async function HomePage() {
       }
       goalDate={goalDate}
       prepCounts={prepCounts}
-      marketSkills={marketSkills}
+      marketSkills={marketSkillCards}
       hasRoadmap={Boolean(roadmap && items.length > 0)}
     />
   );

@@ -4,8 +4,7 @@ import { InternshipPrepHub } from "@/components/internship-prep/internship-prep-
 import { LocalizedPageShell } from "@/components/layout/localized-page-shell";
 import { getInternshipPrepPayload } from "@/lib/internship-prep";
 import { getCompletedInternshipItemKeys } from "@/lib/internship-prep-progress";
-import { listApprovedMarketJobs } from "@/lib/jobs/market";
-import { rankSkills } from "@/lib/jobs/market-types";
+import { getApprovedJobCount, getMarketSkillHighlights } from "@/lib/jobs/market";
 
 export const metadata: Metadata = {
   title: "Internship Prep",
@@ -13,13 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default async function InternshipPrepPage() {
-  const [completedKeys, payload, marketJobs] = await Promise.all([
+  const [completedKeys, payload, marketSkills, marketJobCount] = await Promise.all([
     getCompletedInternshipItemKeys(),
     getInternshipPrepPayload(),
-    listApprovedMarketJobs(),
+    getMarketSkillHighlights(5),
+    getApprovedJobCount(),
   ]);
 
-  const marketSkills = rankSkills(marketJobs, 5).map((skill) => ({
+  const marketSkillCards = marketSkills.map((skill) => ({
     name: skill.name,
     share: skill.share,
   }));
@@ -29,8 +29,8 @@ export default async function InternshipPrepPage() {
       <InternshipPrepHub
         initialCompletedKeys={completedKeys}
         copyByLocale={payload.copy}
-        marketSkills={marketSkills}
-        marketJobCount={marketJobs.length}
+        marketSkills={marketSkillCards}
+        marketJobCount={marketJobCount}
       />
     </LocalizedPageShell>
   );

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { LearningPath, UserLevel } from "@/generated/prisma/enums";
 import { getPrisma } from "@/lib/db";
 import {
@@ -141,7 +143,22 @@ export async function listRoadmaps(): Promise<RoadmapDefinition[]> {
   }
 }
 
-export async function getRoadmapByPath(path: RoadmapPath): Promise<RoadmapDefinition | null> {
+/** Lightweight titles for roadmap path tabs (no sections/items). */
+export const listRoadmapPathOptions = cache(async (): Promise<Array<{ path: RoadmapPath; title: string }>> => {
+  if (!process.env.DATABASE_URL) return [];
+  try {
+    const rows = await getPrisma().roadmap.findMany({
+      select: { path: true, title: true },
+      orderBy: { path: "asc" },
+    });
+    return rows.map((row) => ({ path: pathFromEnum[row.path], title: row.title }));
+  } catch (error) {
+    console.error("listRoadmapPathOptions failed:", error);
+    return [];
+  }
+});
+
+async function fetchRoadmapByPath(path: RoadmapPath): Promise<RoadmapDefinition | null> {
   if (!roadmapPaths.includes(path) || !process.env.DATABASE_URL) return null;
   const pathEnum = path === "frontend" ? LearningPath.FRONTEND : path === "backend" ? LearningPath.BACKEND : LearningPath.FULLSTACK;
   try {
@@ -155,6 +172,9 @@ export async function getRoadmapByPath(path: RoadmapPath): Promise<RoadmapDefini
     return null;
   }
 }
+
+/** Dedupes metadata + page fetches within the same request. */
+export const getRoadmapByPath = cache(fetchRoadmapByPath);
 
 export async function getRoadmapBySlug(slug: string): Promise<RoadmapDefinition | null> {
   if (!process.env.DATABASE_URL) return null;

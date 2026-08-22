@@ -1,15 +1,27 @@
 import "server-only";
 
 import { JobLevel } from "@/generated/prisma/enums";
+import { getApprovedJobsCached, type ApprovedJobRow } from "@/lib/jobs/approved-jobs-query";
 import { getPrisma } from "@/lib/db";
-import type { MarketJob, MarketRole } from "@/lib/jobs/market-types";
+import type { MarketJob, MarketLevel, MarketRole } from "@/lib/jobs/market-types";
+import { rankSkills } from "@/lib/jobs/market-types";
 
 export type { MarketJob, MarketLevel, MarketRole } from "@/lib/jobs/market-types";
 export { getStackDescription, rankSkills, rankStacks } from "@/lib/jobs/market-types";
 
-function daysAgo(date: Date | null, fallback: Date) {
-  const source = date ?? fallback;
-  return Math.max(0, Math.floor((Date.now() - source.getTime()) / (1000 * 60 * 60 * 24)));
+const jobInclude = {
+  company: { select: { name: true } },
+  skills: { include: { skill: { select: { slug: true, name: true } } }, orderBy: { skill: { name: "asc" as const } } },
+};
+
+/** unstable_cache returns ISO strings instead of Date objects. */
+function toEpochMs(value: Date | string | null | undefined, fallback: Date | string) {
+  const ms = new Date(value ?? fallback).getTime();
+  return Number.isFinite(ms) ? ms : Date.now();
+}
+
+function daysAgo(postedAt: Date | string | null, createdAt: Date | string) {
+  return Math.max(0, Math.floor((Date.now() - toEpochMs(postedAt, createdAt)) / (1000 * 60 * 60 * 24)));
 }
 
 function inferRole(title: string, skills: string[]): MarketRole {
@@ -36,37 +48,128 @@ function inferStack(skills: string[]) {
   return skills[0] ?? "General web";
 }
 
-export async function listApprovedMarketJobs(): Promise<MarketJob[]> {
-  if (!process.env.DATABASE_URL) return [];
+export function mapApprovedJobRow(job: ApprovedJobRow): MarketJob {
+  const skills = job.skills.map((link) => link.skill.name);
+  return {
+    id: job.id,
+    title: job.title,
+    company: job.company.name,
+    role: inferRole(job.title, skills),
+    level: job.level === JobLevel.JUNIOR ? "junior" : "intern",
+    location: job.location ?? "Myanmar",
+    postedDaysAgo: daysAgo(job.postedAt, job.createdAt),
+    skills,
+    stack: inferStack(skills),
+    sourceUrl: job.sourceUrl,
+    sourceName: job.sourceName,
+  };
+}
+
+export type MarketJobsPage = {
+  jobs: MarketJob[];
+  nextCursor: string | null;
+  hasMore: boolean;
+};
+
+export async function listApprovedMarketJobsPage(options?: {
+  cursor?: string;
+  limit?: number;
+}): Promise<MarketJobsPage> {
+  if (!process.env.DATABASE_URL) return { jobs: [], nextCursor: null, hasMore: false };
+
+  const limit = Math.min(Math.max(options?.limit ?? 20, 1), 50);
+  const cursor = options?.cursor?.trim();
 
   try {
-    const jobs = await getPrisma().job.findMany({
+    const rows = await getPrisma().job.findMany({
       where: { status: "APPROVED" },
-      include: {
-        company: { select: { name: true } },
-        skills: { include: { skill: { select: { name: true } } }, orderBy: { skill: { name: "asc" } } },
-      },
+      take: limit + 1,
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
       orderBy: [{ postedAt: "desc" }, { createdAt: "desc" }],
+      include: jobInclude,
     });
 
-    return jobs.map((job) => {
-      const skills = job.skills.map((link) => link.skill.name);
-      return {
-        id: job.id,
-        title: job.title,
-        company: job.company.name,
-        role: inferRole(job.title, skills),
-        level: job.level === JobLevel.JUNIOR ? "junior" : "intern",
-        location: job.location ?? "Myanmar",
-        postedDaysAgo: daysAgo(job.postedAt, job.createdAt),
-        skills,
-        stack: inferStack(skills),
-        sourceUrl: job.sourceUrl,
-        sourceName: job.sourceName,
-      };
-    });
+    const hasMore = rows.length > limit;
+    const page = hasMore ? rows.slice(0, limit) : rows;
+    const jobs = page.map(mapApprovedJobRow);
+
+    return {
+      jobs,
+      nextCursor: hasMore ? jobs[jobs.length - 1]?.id ?? null : null,
+      hasMore,
+    };
   } catch (error) {
-    console.error("listApprovedMarketJobs failed:", error);
-    return [];
+    console.error("listApprovedMarketJobsPage failed:", error);
+    return { jobs: [], nextCursor: null, hasMore: false };
   }
+}
+
+/** Used by roadmap demand and other server-side aggregates (cached). */
+export async function listApprovedMarketJobs(): Promise<MarketJob[]> {
+  const jobs = await getApprovedJobsCached();
+  return jobs.map(mapApprovedJobRow);
+}
+
+export async function getApprovedJobCount() {
+  if (!process.env.DATABASE_URL) return 0;
+  try {
+    return await getPrisma().job.count({ where: { status: "APPROVED" } });
+  } catch (error) {
+    console.error("getApprovedJobCount failed:", error);
+    return 0;
+  }
+}
+
+export async function getMarketSkillHighlights(limit = 4) {
+  const jobs = await listApprovedMarketJobs();
+  return rankSkills(jobs, limit);
+}
+
+export type MarketTrendsFilters = {
+  role?: "all" | MarketRole;
+  level?: "all" | MarketLevel;
+  range?: 30 | 90 | 999;
+};
+
+export type MarketTrendsSnapshot = {
+  matchingCount: number;
+  skills: Array<{ name: string; count: number }>;
+  stacks: Array<{ name: string; count: number }>;
+  interns: MarketJob[];
+  juniors: MarketJob[];
+  recentJobs: MarketJob[];
+};
+
+function rankNames(values: string[]) {
+  const totals = new Map<string, number>();
+  values.forEach((value) => totals.set(value, (totals.get(value) ?? 0) + 1));
+  return [...totals.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+}
+
+export async function getMarketTrends(filters: MarketTrendsFilters = {}): Promise<MarketTrendsSnapshot> {
+  const role = filters.role ?? "all";
+  const level = filters.level ?? "all";
+  const range = filters.range ?? 90;
+
+  const jobs = await listApprovedMarketJobs();
+  const filtered = jobs.filter(
+    (job) =>
+      (role === "all" || job.role === role) &&
+      (level === "all" || job.level === level) &&
+      job.postedDaysAgo <= range,
+  );
+
+  const interns = filtered.filter((job) => job.level === "intern");
+  const juniors = filtered.filter((job) => job.level === "junior");
+
+  return {
+    matchingCount: filtered.length,
+    skills: rankNames(filtered.flatMap((job) => job.skills)).slice(0, 8),
+    stacks: rankNames(filtered.map((job) => job.stack)).slice(0, 4),
+    interns,
+    juniors,
+    recentJobs: [...filtered].sort((a, b) => a.postedDaysAgo - b.postedDaysAgo).slice(0, 4),
+  };
 }

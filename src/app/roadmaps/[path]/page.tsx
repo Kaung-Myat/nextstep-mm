@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { RoadmapScreen } from "@/components/roadmap/roadmap-screen";
 import { getCompletedItemSlugs } from "@/lib/roadmap-progress";
 import { getRoadmapDemand } from "@/lib/roadmaps/demand";
-import { getRoadmapByPath, listRoadmaps, roadmapPaths, type RoadmapPath } from "@/lib/roadmaps";
+import { getRoadmapByPath, listRoadmapPathOptions, roadmapPaths, type RoadmapPath } from "@/lib/roadmaps";
 
 type RoadmapDetailPageProps = {
   params: Promise<{
@@ -43,14 +43,17 @@ export default async function RoadmapDetailPage({
     notFound();
   }
 
-  const roadmap = await getRoadmapByPath(path as RoadmapPath);
+  const [roadmap, pathOptions] = await Promise.all([
+    getRoadmapByPath(path as RoadmapPath),
+    listRoadmapPathOptions(),
+  ]);
+
   if (!roadmap) {
     notFound();
   }
 
-  const [completedItemSlugs, allRoadmaps, demand] = await Promise.all([
+  const [completedItemSlugs, demand] = await Promise.all([
     getCompletedItemSlugs(roadmap.slug),
-    listRoadmaps(),
     getRoadmapDemand(roadmap),
   ]);
 
@@ -58,7 +61,7 @@ export default async function RoadmapDetailPage({
     <RoadmapScreen
       roadmap={roadmap}
       initialCompletedItemSlugs={completedItemSlugs}
-      paths={allRoadmaps.map((entry) => ({ path: entry.path, title: entry.title }))}
+      paths={pathOptions}
       demand={demand}
     />
   );

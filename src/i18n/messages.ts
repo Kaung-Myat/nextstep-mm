@@ -125,6 +125,8 @@ export type AppMessages = {
     levelIntern: string;
     levelJunior: string;
     sourceLabel: string;
+    loadingMore: string;
+    endOfList: string;
   };
   roadmapDetail: {
     sortLearning: string;
@@ -463,6 +465,8 @@ export const messages = {
       levelIntern: "Intern",
       levelJunior: "Junior",
       sourceLabel: "Source",
+      loadingMore: "Loading more jobs…",
+      endOfList: "You have reached the end of the list.",
     },
     roadmapDetail: {
       sortLearning: "Learning order",
@@ -799,6 +803,8 @@ export const messages = {
       levelIntern: "Intern",
       levelJunior: "Junior",
       sourceLabel: "အရင်းအမြစ်",
+      loadingMore: "အလုပ်ခေါ်စာ ထပ်မံ ဖွင့်နေသည်…",
+      endOfList: "စာရင်းအဆုံးသို့ ရောက်ပါပြီ။",
     },
     roadmapDetail: {
       sortLearning: "သင်ယူမှုအစဉ်",

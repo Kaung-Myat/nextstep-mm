@@ -4,8 +4,7 @@ import { normalizeAdvisorMessages } from "@/lib/advisor/normalize-messages";
 import { allowRequest, clientIpFromRequest } from "@/lib/api/rate-limit";
 import { getCurrentProfile } from "@/lib/profile";
 import { getRoadmapByPath, type RoadmapPath } from "@/lib/roadmaps";
-import { listApprovedMarketJobs } from "@/lib/jobs/market";
-import { rankSkills } from "@/lib/jobs/market-types";
+import { getMarketSkillHighlights } from "@/lib/jobs/market";
 import { getCompletedItemSlugs } from "@/lib/roadmap-progress";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -18,10 +17,8 @@ const SKILL_CACHE_MS = 60_000;
 async function topMarketSkillsCached() {
   const now = Date.now();
   if (skillCache && now - skillCache.at < SKILL_CACHE_MS) return skillCache.value;
-  const jobs = await listApprovedMarketJobs();
-  const value = rankSkills(jobs, 5)
-    .map((skill) => skill.name)
-    .join(", ");
+  const skills = await getMarketSkillHighlights(5);
+  const value = skills.map((skill) => skill.name).join(", ");
   skillCache = { at: now, value };
   return value;
 }
