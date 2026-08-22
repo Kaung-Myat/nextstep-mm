@@ -147,6 +147,8 @@ export type AppMessages = {
     expectedOutcome: string;
     nextTopic: string;
     backToRoadmaps: string;
+    markComplete: string;
+    markIncomplete: string;
     miniProjects: string;
     commonMistakes: string;
     resources: string;
@@ -487,6 +489,8 @@ export const messages = {
       expectedOutcome: "Expected outcome",
       nextTopic: "Suggested next topic",
       backToRoadmaps: "Back to roadmaps",
+      markComplete: "Mark complete",
+      markIncomplete: "Mark incomplete",
       miniProjects: "Mini projects",
       commonMistakes: "Common mistakes",
       resources: "Resources",
@@ -619,7 +623,8 @@ export const messages = {
       crawlDescription: "Pull new internship and junior openings into Trends and Jobs.",
       crawlButton: "Refresh now",
       crawlRunning: "Refreshing…",
-      crawlModelHint: "Uses your saved AI key for skill reading when available.",
+      crawlModelHint:
+        "Skill reading uses your OpenRouter key with {model}. Without it, a built-in keyword list is used.",
       crawlSuccess: "Done. Imported {imported}, approved {approved}, duplicates {duplicate}.",
       crawlFailed: "Refresh failed. Try again shortly.",
       crawlStepPrepare: "Getting ready",
@@ -825,6 +830,8 @@ export const messages = {
       expectedOutcome: "ရရှိမည့်ရလဒ်",
       nextTopic: "အကြံပြု နောက်သင်ခန်းစာ",
       backToRoadmaps: "လမ်းညွှန်စာရင်းသို့ ပြန်ရန်",
+      markComplete: "ပြီးမြောက်ကြောင်း မှတ်ရန်",
+      markIncomplete: "မပြီးသေးကြောင်း မှတ်ရန်",
       miniProjects: "Mini ပရောဂျက်များ",
       commonMistakes: "အဖြစ်များသော အမှားများ",
       resources: "အရင်းအမြစ်များ",
@@ -957,7 +964,8 @@ export const messages = {
       crawlDescription: "အလုပ်သင်နှင့် အငယ်တန်းအလုပ်ခေါ်စာအသစ်များကို ဈေးကွက်အခြေအနေနှင့် အလုပ်များစာမျက်နှာသို့ ရယူပါ။",
       crawlButton: "ယခု ပြန်လည်ရယူမည်",
       crawlRunning: "ပြန်လည်ရယူနေသည်…",
-      crawlModelHint: "သိမ်းထားသော AI key ရှိပါက လိုအပ်သည့်ကျွမ်းကျင်မှုများကို ခွဲထုတ်ရန် အသုံးပြုပါမည်။",
+      crawlModelHint:
+        "ကျွမ်းကျင်မှုခွဲထုတ်ရန် OpenRouter key ({model}) ကို အသုံးပြုပါမည်။ key မရှိပါက built-in keyword list သုံးမည်။",
       crawlSuccess: "ပြီးပါပြီ။ အသစ် {imported} ခု၊ အတည်ပြု {approved} ခု၊ ထပ်နေသောစာရင်း {duplicate} ခု။",
       crawlFailed: "အလုပ်ခေါ်စာများကို ပြန်လည်ရယူ၍ မရပါ။ ခဏနေမှ ထပ်ကြိုးစားပါ။",
       crawlStepPrepare: "ပြင်ဆင်နေသည်",

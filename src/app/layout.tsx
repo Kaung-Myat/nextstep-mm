@@ -5,9 +5,6 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { Navbar } from "@/components/navigation/navbar";
 import { PreferencesProvider } from "@/components/preferences/preferences-provider";
 import { AppLaunchProvider } from "@/components/pwa/app-launch-provider";
-import { AdvisorChromeProvider } from "@/components/advisor/advisor-chrome-context";
-import { AdvisorModelPickerSheet } from "@/components/advisor/advisor-model-picker-sheet";
-import { ByokProvider } from "@/components/settings/byok-provider";
 import { CrawlProvider } from "@/components/settings/crawl-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { siteConfig } from "@/lib/site";
@@ -52,7 +49,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
   themeColor: [
@@ -88,20 +84,15 @@ export default function RootLayout({
       <body className={`${notoSans.variable} ${notoMyanmar.variable}`}>
         <PreferencesProvider>
           <ToastProvider>
-            <ByokProvider>
-              <AdvisorChromeProvider>
-                <CrawlProvider>
-                  <AppLaunchProvider>
-                    <div className="app-shell">
-                      <SiteHeader />
-                      <Navbar />
-                      <main className="app-main">{children}</main>
-                    </div>
-                    <AdvisorModelPickerSheet />
-                  </AppLaunchProvider>
-                </CrawlProvider>
-              </AdvisorChromeProvider>
-            </ByokProvider>
+            <CrawlProvider>
+              <AppLaunchProvider>
+                <div className="app-shell">
+                  <SiteHeader />
+                  <Navbar />
+                  <main className="app-main">{children}</main>
+                </div>
+              </AppLaunchProvider>
+            </CrawlProvider>
           </ToastProvider>
         </PreferencesProvider>
       </body>

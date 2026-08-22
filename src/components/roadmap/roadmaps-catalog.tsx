@@ -5,14 +5,14 @@ import Link from "next/link";
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { ProgressBar } from "@/components/roadmap/progress-bar";
 import { formatMessage } from "@/i18n/messages";
-import { countRoadmapItems, type RoadmapDefinition } from "@/lib/roadmaps/types";
+import type { RoadmapSummary } from "@/lib/roadmaps";
 import { cn } from "@/lib/utils";
 
 export function RoadmapsCatalog({
   roadmaps,
   progressByRoadmap,
 }: {
-  roadmaps: RoadmapDefinition[];
+  roadmaps: RoadmapSummary[];
   progressByRoadmap: Record<string, string[]>;
 }) {
   const { copy } = usePreferences();
@@ -29,7 +29,7 @@ export function RoadmapsCatalog({
   return (
     <div className="flex w-full flex-col gap-3">
       {roadmaps.map((roadmap) => {
-        const totalItems = countRoadmapItems(roadmap);
+        const totalItems = roadmap.itemCount;
         const completedItems = (progressByRoadmap[roadmap.slug] ?? []).length;
         const percentage = totalItems === 0 ? 0 : Math.round((completedItems / totalItems) * 100);
 
@@ -46,7 +46,7 @@ export function RoadmapsCatalog({
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent)]">
-                  {formatMessage(ui.stagesItems, { stages: roadmap.sections.length, items: totalItems })}
+                  {formatMessage(ui.stagesItems, { stages: roadmap.sectionCount, items: totalItems })}
                 </p>
                 <h2 className="mt-1 text-[17px] font-bold leading-snug text-[color:var(--color-text)]">{roadmap.title}</h2>
                 <p className="mt-1.5 text-[13px] leading-5 text-[color:var(--color-text-muted)]">{roadmap.summary}</p>

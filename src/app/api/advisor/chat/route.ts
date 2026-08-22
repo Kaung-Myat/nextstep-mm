@@ -113,7 +113,7 @@ async function callOpenRouter(apiKey: string, model: string, messages: ChatMessa
 export async function POST(request: Request) {
   try {
     const ip = clientIpFromRequest(request);
-    if (!allowRequest(`advisor-chat:${ip}`, 20, 60_000)) {
+    if (!(await allowRequest(`advisor-chat:${ip}`, 20, 60_000))) {
       return Response.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
     }
 

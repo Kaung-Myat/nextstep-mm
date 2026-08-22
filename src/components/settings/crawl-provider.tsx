@@ -13,9 +13,9 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useByok } from "@/components/settings/byok-provider";
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { useToast } from "@/components/ui/toast";
+import { readByokKey, BYOK_STORAGE } from "@/lib/byok/storage";
 import { DEFAULT_INGEST_AI_MODEL, DEFAULT_INGEST_AI_PROVIDER } from "@/lib/jobs/ingest-ai";
 import type { CrawlPhaseId, CrawlProgressEvent } from "@/lib/jobs/run-ingest";
 import { cn } from "@/lib/utils";
@@ -66,7 +66,6 @@ function parseSseChunk(buffer: string) {
 export function CrawlProvider({ children }: { children: ReactNode }) {
   const { copy } = usePreferences();
   const { showToast } = useToast();
-  const { openrouterKey, geminiKey } = useByok();
   const runningRef = useRef(false);
 
   const [busy, setBusy] = useState(false);
@@ -87,8 +86,9 @@ export function CrawlProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const provider = openrouterKey ? "openrouter" : geminiKey ? "gemini" : DEFAULT_INGEST_AI_PROVIDER;
-    const apiKey = provider === "openrouter" ? openrouterKey || undefined : geminiKey || undefined;
+    const openrouterKey = readByokKey(BYOK_STORAGE.openrouter);
+    const provider = DEFAULT_INGEST_AI_PROVIDER;
+    const apiKey = openrouterKey || undefined;
 
     runningRef.current = true;
     setBusy(true);
@@ -107,7 +107,7 @@ export function CrawlProvider({ children }: { children: ReactNode }) {
           headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
           body: JSON.stringify({
             provider,
-            model: provider === "openrouter" ? DEFAULT_INGEST_AI_MODEL : undefined,
+            model: DEFAULT_INGEST_AI_MODEL,
             apiKey,
             autoApprove: true,
             limit: 8,
@@ -198,7 +198,7 @@ export function CrawlProvider({ children }: { children: ReactNode }) {
         setItemProgress(null);
       }
     })();
-  }, [copy.settings, geminiKey, openrouterKey, showToast]);
+  }, [copy.settings, showToast]);
 
   const value = useMemo(
     () => ({

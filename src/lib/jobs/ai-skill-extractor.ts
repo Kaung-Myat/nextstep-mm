@@ -154,7 +154,7 @@ export class AiSkillExtractor implements SkillExtractor {
     const dictionarySkills = await this.fallback.extract(job);
     const enabled = this.options.enabled !== false;
     const apiKey = this.options.apiKey?.trim();
-    const provider = this.options.provider ?? "gemini";
+    const provider = this.options.provider ?? "openrouter";
 
     if (!enabled || !apiKey) return dictionarySkills;
 

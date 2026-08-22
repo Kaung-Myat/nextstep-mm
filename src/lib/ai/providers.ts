@@ -24,21 +24,26 @@ export const AI_PROVIDER_META: Record<
   },
 };
 
-/** Static fallbacks used while remote catalogs load or if listing fails. */
+/** Static fallbacks used while remote catalogs load or if listing fails. OpenRouter first (default). */
 export const AI_MODELS: readonly AiModelOption[] = [
-  { provider: "gemini", id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-  { provider: "gemini", id: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
-  { provider: "gemini", id: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
   { provider: "openrouter", id: "openrouter/free", label: "OpenRouter Free" },
-  { provider: "openrouter", id: "google/gemini-2.0-flash-001", label: "Gemini 2.0 Flash" },
+  { provider: "openrouter", id: "google/gemini-2.0-flash-001", label: "Gemini 2.0 Flash (via OpenRouter)" },
   { provider: "openrouter", id: "openai/gpt-4o-mini", label: "GPT-4o Mini" },
   { provider: "openrouter", id: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 Sonnet" },
   { provider: "openrouter", id: "meta-llama/llama-3.3-70b-instruct", label: "Llama 3.3 70B" },
+  { provider: "gemini", id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
+  { provider: "gemini", id: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
+  { provider: "gemini", id: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
 ] as const;
 
 export type SelectedAiModel = {
   provider: AiProviderId;
   modelId: string;
+};
+
+export const DEFAULT_ADVISOR_MODEL: SelectedAiModel = {
+  provider: "openrouter",
+  modelId: "openrouter/free",
 };
 
 export function isAiProviderId(value: unknown): value is AiProviderId {
@@ -62,7 +67,12 @@ export function defaultModelForProviders(
   providers: AiProviderId[],
   catalog: readonly AiModelOption[] = AI_MODELS,
 ): SelectedAiModel | null {
-  const first = modelsForProviders(providers, catalog)[0];
+  const available = modelsForProviders(providers, catalog);
+  const openrouterDefault = available.find((model) => model.provider === "openrouter");
+  if (openrouterDefault) {
+    return { provider: openrouterDefault.provider, modelId: openrouterDefault.id };
+  }
+  const first = available[0];
   return first ? { provider: first.provider, modelId: first.id } : null;
 }
 

@@ -37,4 +37,6 @@ export async function setRoadmapItemCompletion(path: RoadmapPath, itemSlug: stri
     await prisma.roadmapProgress.deleteMany({ where: { userId: user.id, roadmapItemId: roadmapItem.id } });
   }
   revalidatePath(`/roadmaps/${path}`);
+  revalidatePath("/roadmaps");
+  revalidatePath("/");
 }

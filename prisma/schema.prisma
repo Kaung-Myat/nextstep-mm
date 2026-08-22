@@ -193,6 +193,7 @@ model Job {
   @@index([companyId])
   @@index([level, jobType])
   @@index([status, createdAt])
+  @@index([status, postedAt, createdAt])
   @@index([postedAt])
 }
 

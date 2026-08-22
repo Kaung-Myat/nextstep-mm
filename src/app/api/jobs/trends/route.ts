@@ -1,3 +1,4 @@
+import { rateLimitResponse } from "@/lib/api/rate-limit";
 import { getMarketTrends, type MarketTrendsFilters } from "@/lib/jobs/market";
 
 function parseRole(value: string | null): MarketTrendsFilters["role"] {
@@ -17,6 +18,9 @@ function parseRange(value: string | null): MarketTrendsFilters["range"] {
 }
 
 export async function GET(request: Request) {
+  const limited = await rateLimitResponse(request, "jobs-trends", 60, 60 * 1000);
+  if (limited) return limited;
+
   const { searchParams } = new URL(request.url);
   const snapshot = await getMarketTrends({
     role: parseRole(searchParams.get("role")),

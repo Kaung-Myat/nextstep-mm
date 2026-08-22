@@ -2,6 +2,7 @@ import "server-only";
 
 import { JobLevel } from "@/generated/prisma/enums";
 import { getApprovedJobsCached, type ApprovedJobRow } from "@/lib/jobs/approved-jobs-query";
+import { decodeJobsPageCursor, encodeJobsPageCursor, jobsPageCursorWhere } from "@/lib/jobs/job-page-cursor";
 import { getPrisma } from "@/lib/db";
 import type { MarketJob, MarketLevel, MarketRole } from "@/lib/jobs/market-types";
 import { rankSkills } from "@/lib/jobs/market-types";
@@ -81,21 +82,29 @@ export async function listApprovedMarketJobsPage(options?: {
   const cursor = options?.cursor?.trim();
 
   try {
+    const decodedCursor = cursor ? decodeJobsPageCursor(cursor) : null;
+    if (cursor && !decodedCursor) {
+      return { jobs: [], nextCursor: null, hasMore: false };
+    }
+
     const rows = await getPrisma().job.findMany({
-      where: { status: "APPROVED" },
+      where: {
+        status: "APPROVED",
+        ...(decodedCursor ? jobsPageCursorWhere(decodedCursor) : {}),
+      },
       take: limit + 1,
-      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
-      orderBy: [{ postedAt: "desc" }, { createdAt: "desc" }],
+      orderBy: [{ postedAt: { sort: "desc", nulls: "last" } }, { createdAt: "desc" }, { id: "desc" }],
       include: jobInclude,
     });
 
     const hasMore = rows.length > limit;
     const page = hasMore ? rows.slice(0, limit) : rows;
     const jobs = page.map(mapApprovedJobRow);
+    const lastRow = page[page.length - 1];
 
     return {
       jobs,
-      nextCursor: hasMore ? jobs[jobs.length - 1]?.id ?? null : null,
+      nextCursor: hasMore && lastRow ? encodeJobsPageCursor(lastRow) : null,
       hasMore,
     };
   } catch (error) {
@@ -131,14 +140,44 @@ export type MarketTrendsFilters = {
   range?: 30 | 90 | 999;
 };
 
+export type MarketTrendsLevelStats = {
+  count: number;
+  topSkill: string;
+  avgSkills: number;
+};
+
 export type MarketTrendsSnapshot = {
   matchingCount: number;
   skills: Array<{ name: string; count: number }>;
   stacks: Array<{ name: string; count: number }>;
-  interns: MarketJob[];
-  juniors: MarketJob[];
+  internStats: MarketTrendsLevelStats;
+  juniorStats: MarketTrendsLevelStats;
   recentJobs: MarketJob[];
 };
+
+function summarizeLevel(jobs: MarketJob[]): MarketTrendsLevelStats {
+  if (jobs.length === 0) {
+    return { count: 0, topSkill: "—", avgSkills: 0 };
+  }
+
+  const totals = new Map<string, number>();
+  let skillCount = 0;
+  for (const job of jobs) {
+    skillCount += job.skills.length;
+    for (const skill of job.skills) {
+      totals.set(skill, (totals.get(skill) ?? 0) + 1);
+    }
+  }
+
+  const topSkill =
+    [...totals.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? "—";
+
+  return {
+    count: jobs.length,
+    topSkill,
+    avgSkills: Number((skillCount / jobs.length).toFixed(1)),
+  };
+}
 
 function rankNames(values: string[]) {
   const totals = new Map<string, number>();
@@ -168,8 +207,8 @@ export async function getMarketTrends(filters: MarketTrendsFilters = {}): Promis
     matchingCount: filtered.length,
     skills: rankNames(filtered.flatMap((job) => job.skills)).slice(0, 8),
     stacks: rankNames(filtered.map((job) => job.stack)).slice(0, 4),
-    interns,
-    juniors,
+    internStats: summarizeLevel(interns),
+    juniorStats: summarizeLevel(juniors),
     recentJobs: [...filtered].sort((a, b) => a.postedDaysAgo - b.postedDaysAgo).slice(0, 4),
   };
 }

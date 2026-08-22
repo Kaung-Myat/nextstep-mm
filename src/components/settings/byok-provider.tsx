@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import {
@@ -14,12 +13,7 @@ import {
   type AiProviderId,
   type SelectedAiModel,
 } from "@/lib/ai/providers";
-
-const STORAGE = {
-  gemini: "nextstep-byok-gemini",
-  openrouter: "nextstep-byok-openrouter",
-  model: "nextstep-advisor-model",
-} as const;
+import { BYOK_STORAGE, readByokKey, readSavedAdvisorModel, writeByokKey } from "@/lib/byok/storage";
 
 type ByokContextValue = {
   geminiKey: string;
@@ -42,31 +36,6 @@ type ByokContextValue = {
 };
 
 const ByokContext = createContext<ByokContextValue | null>(null);
-
-function readKey(storageKey: string) {
-  if (typeof window === "undefined") return "";
-  try {
-    return localStorage.getItem(storageKey)?.trim() ?? "";
-  } catch {
-    return "";
-  }
-}
-
-function readModel(): SelectedAiModel | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(STORAGE.model);
-    return raw ? (JSON.parse(raw) as SelectedAiModel) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeKey(storageKey: string, value: string) {
-  const trimmed = value.trim();
-  if (!trimmed) localStorage.removeItem(storageKey);
-  else localStorage.setItem(storageKey, trimmed);
-}
 
 function hashKeyFingerprint(apiKey: string) {
   let hash = 0;
@@ -109,21 +78,15 @@ async function fetchProviderModels(provider: AiProviderId, apiKey: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ provider, apiKey }),
   });
-  const payload = (await response.json()) as { models?: AiModelOption[]; error?: string };
-  if (!response.ok || !payload.models?.length) {
+  const payload = (await response.json()) as { models?: AiModelOption[]; error?: string; fallback?: boolean };
+  if (!payload.models?.length) {
     throw new Error(payload.error ?? "Could not load models.");
   }
-  writeCachedModels(provider, apiKey, payload.models);
+  if (!payload.fallback) writeCachedModels(provider, apiKey, payload.models);
   return payload.models;
 }
 
-function shouldLoadRemoteModels(pathname: string | null) {
-  if (!pathname) return false;
-  return pathname === "/advisor" || pathname.startsWith("/settings") || pathname.startsWith("/profile");
-}
-
 export function ByokProvider({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
   // Start empty so SSR and the first client paint match (keys live in localStorage).
   const [geminiKey, setGeminiKeyState] = useState("");
   const [openrouterKey, setOpenrouterKeyState] = useState("");
@@ -134,31 +97,26 @@ export function ByokProvider({ children }: { children: ReactNode }) {
   const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
-    setGeminiKeyState(readKey(STORAGE.gemini));
-    setOpenrouterKeyState(readKey(STORAGE.openrouter));
-    setPreferredModel(readModel());
+    setGeminiKeyState(readByokKey(BYOK_STORAGE.gemini));
+    setOpenrouterKeyState(readByokKey(BYOK_STORAGE.openrouter));
+    setPreferredModel(readSavedAdvisorModel());
   }, []);
 
   const availableProviders = useMemo(() => {
     const providers: AiProviderId[] = [];
-    if (geminiKey) providers.push("gemini");
     if (openrouterKey) providers.push("openrouter");
+    if (geminiKey) providers.push("gemini");
     return providers;
   }, [geminiKey, openrouterKey]);
 
-  const loadRemote = shouldLoadRemoteModels(pathname);
+  const loadRemote = availableProviders.length > 0;
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadModels() {
-      if (!loadRemote || availableProviders.length === 0) {
-        if (!loadRemote) {
-          // Keep last catalog if navigating away; only clear when keys are gone.
-          if (availableProviders.length === 0) setRemoteModels([]);
-        } else {
-          setRemoteModels([]);
-        }
+      if (!loadRemote) {
+        setRemoteModels([]);
         setModelsLoading(false);
         setModelsError("");
         return;
@@ -205,12 +163,12 @@ export function ByokProvider({ children }: { children: ReactNode }) {
 
   const setGeminiKey = useCallback((value: string) => {
     setGeminiKeyState(value.trim());
-    writeKey(STORAGE.gemini, value);
+    writeByokKey(BYOK_STORAGE.gemini, value);
   }, []);
 
   const setOpenrouterKey = useCallback((value: string) => {
     setOpenrouterKeyState(value.trim());
-    writeKey(STORAGE.openrouter, value);
+    writeByokKey(BYOK_STORAGE.openrouter, value);
   }, []);
 
   const clearGeminiKey = useCallback(() => {
@@ -226,7 +184,7 @@ export function ByokProvider({ children }: { children: ReactNode }) {
       if (!availableProviders.includes(value.provider) || !isPlausibleModelId(value.modelId)) return;
       if (!findModel(value, availableModels) && remoteModels.length > 0) return;
       setPreferredModel(value);
-      localStorage.setItem(STORAGE.model, JSON.stringify(value));
+      localStorage.setItem(BYOK_STORAGE.model, JSON.stringify(value));
     },
     [availableProviders, availableModels, remoteModels.length],
   );

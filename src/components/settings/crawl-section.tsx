@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { useCrawl } from "@/components/settings/crawl-provider";
 import { Button } from "@/components/ui/button";
+import { formatMessage } from "@/i18n/messages";
+import { DEFAULT_INGEST_AI_MODEL } from "@/lib/jobs/ingest-ai";
 import type { CrawlPhaseId } from "@/lib/jobs/run-ingest";
 import { cn } from "@/lib/utils";
 
@@ -86,7 +88,9 @@ export function CrawlSection() {
 
       <div className="overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-card)]">
         <div className="space-y-4 p-4">
-          <p className="text-[12px] leading-5 text-[color:var(--color-text-soft)]">{copy.settings.crawlModelHint}</p>
+          <p className="text-[12px] leading-5 text-[color:var(--color-text-soft)]">
+            {formatMessage(copy.settings.crawlModelHint, { model: DEFAULT_INGEST_AI_MODEL })}
+          </p>
           <p className="text-[12px] leading-5 text-[color:var(--color-text-muted)]">
             {copy.settings.crawlNavHint}
           </p>

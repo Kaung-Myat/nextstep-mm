@@ -129,6 +129,46 @@ const roadmapInclude = {
   },
 };
 
+export type RoadmapSummary = {
+  path: RoadmapPath;
+  slug: string;
+  title: string;
+  summary: string;
+  sectionCount: number;
+  itemCount: number;
+};
+
+export async function listRoadmapSummaries(): Promise<RoadmapSummary[]> {
+  if (!process.env.DATABASE_URL) return [];
+  try {
+    const rows = await getPrisma().roadmap.findMany({
+      select: {
+        slug: true,
+        title: true,
+        description: true,
+        path: true,
+        sections: {
+          select: {
+            _count: { select: { items: true } },
+          },
+        },
+      },
+      orderBy: { path: "asc" },
+    });
+    return rows.map((row) => ({
+      path: pathFromEnum[row.path],
+      slug: row.slug,
+      title: row.title,
+      summary: row.description,
+      sectionCount: row.sections.length,
+      itemCount: row.sections.reduce((total, section) => total + section._count.items, 0),
+    }));
+  } catch (error) {
+    console.error("listRoadmapSummaries failed:", error);
+    return [];
+  }
+}
+
 export async function listRoadmaps(): Promise<RoadmapDefinition[]> {
   if (!process.env.DATABASE_URL) return [];
   try {

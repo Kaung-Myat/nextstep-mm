@@ -6,7 +6,7 @@ import {
   internshipCategoryCounts,
 } from "@/lib/internship-prep";
 import { getCompletedInternshipItemKeys } from "@/lib/internship-prep-progress";
-import { getApprovedJobCount, getMarketSkillHighlights } from "@/lib/jobs/market";
+import { getMarketSkillHighlights } from "@/lib/jobs/market";
 import { getCurrentProfile } from "@/lib/profile";
 import { getCompletedItemSlugs } from "@/lib/roadmap-progress";
 import { getRoadmapByPath, type RoadmapPath } from "@/lib/roadmaps";

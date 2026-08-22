@@ -7,18 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { OptionSheetField } from "@/components/profile/native-pickers";
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { formatMessage } from "@/i18n/messages";
-import { getStackDescription, type MarketJob, type MarketLevel, type MarketRole } from "@/lib/jobs/market-types";
+import { getStackDescription, type MarketLevel, type MarketRole } from "@/lib/jobs/market-types";
 import type { MarketTrendsSnapshot } from "@/lib/jobs/market";
 
 type RoleFilter = "all" | MarketRole;
 type LevelFilter = "all" | MarketLevel;
 type RangeFilter = 30 | 90 | 999;
-
-function topSkill(jobs: MarketJob[]) {
-  const totals = new Map<string, number>();
-  jobs.flatMap((job) => job.skills).forEach((skill) => totals.set(skill, (totals.get(skill) ?? 0) + 1));
-  return [...totals.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? "—";
-}
 
 export function TrendsDashboard() {
   const { copy } = usePreferences();
@@ -59,8 +53,8 @@ export function TrendsDashboard() {
   const skills = snapshot?.skills ?? [];
   const stacks = snapshot?.stacks ?? [];
   const maxSkillCount = skills[0]?.count ?? 1;
-  const interns = snapshot?.interns ?? [];
-  const juniors = snapshot?.juniors ?? [];
+  const internStats = snapshot?.internStats ?? { count: 0, topSkill: "—", avgSkills: 0 };
+  const juniorStats = snapshot?.juniorStats ?? { count: 0, topSkill: "—", avgSkills: 0 };
   const recentJobs = snapshot?.recentJobs ?? [];
 
   const emptyDataset = useMemo(
@@ -202,12 +196,12 @@ export function TrendsDashboard() {
                 <span>{ui.junior}</span>
               </div>
               {[
-                [ui.listings, String(interns.length), String(juniors.length)],
-                [ui.topSkill, topSkill(interns), topSkill(juniors)],
+                [ui.listings, String(internStats.count), String(juniorStats.count)],
+                [ui.topSkill, internStats.topSkill, juniorStats.topSkill],
                 [
                   ui.avgSkills,
-                  interns.length ? (interns.reduce((sum, job) => sum + job.skills.length, 0) / interns.length).toFixed(1) : "—",
-                  juniors.length ? (juniors.reduce((sum, job) => sum + job.skills.length, 0) / juniors.length).toFixed(1) : "—",
+                  internStats.count ? internStats.avgSkills.toFixed(1) : "—",
+                  juniorStats.count ? juniorStats.avgSkills.toFixed(1) : "—",
                 ],
               ].map(([label, intern, junior]) => (
                 <div key={label} className="grid grid-cols-[1fr_0.7fr_0.7fr] border-b border-[color:var(--color-line)] px-3 py-3 text-[13px] last:border-0">

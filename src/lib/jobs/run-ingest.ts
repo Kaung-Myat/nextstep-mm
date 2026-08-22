@@ -1,3 +1,5 @@
+import { revalidatePath, revalidateTag } from "next/cache";
+
 import { createIngestSkillExtractor, resolveIngestAiOptions, type IngestAiOptions } from "@/lib/jobs/ingest-ai";
 import { fetchApprovedSourceJobs, type FetchableSourceId } from "@/lib/jobs/fetchers";
 import { JobsIngestionService } from "@/lib/jobs/ingest";
@@ -87,6 +89,18 @@ export async function runJobIngest(options: RunJobIngestOptions = {}): Promise<R
   }
 
   emit({ type: "phase", phase: "done" });
+
+  if (approved > 0) {
+    try {
+      revalidateTag("market-jobs", "max");
+      revalidatePath("/");
+      revalidatePath("/jobs");
+      revalidatePath("/trends");
+      revalidatePath("/roadmaps");
+    } catch (error) {
+      console.warn("Market cache revalidation skipped:", error);
+    }
+  }
 
   return {
     fetched: records.length,

@@ -9,7 +9,7 @@ import { AI_PROVIDER_META, type AiProviderId } from "@/lib/ai/providers";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
-const PROVIDERS: AiProviderId[] = ["gemini", "openrouter"];
+const PROVIDERS: AiProviderId[] = ["openrouter", "gemini"];
 
 function maskKey(value: string) {
   if (!value) return "";
@@ -29,7 +29,7 @@ export function ByokSection() {
     clearOpenrouterKey,
   } = useByok();
 
-  const [provider, setProvider] = useState<AiProviderId>("gemini");
+  const [provider, setProvider] = useState<AiProviderId>("openrouter");
   const [draft, setDraft] = useState("");
   const [showKey, setShowKey] = useState(false);
 

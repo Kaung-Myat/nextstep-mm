@@ -301,6 +301,8 @@ export function RoadmapScreen({
                 miniProjectsLabel={ui.miniProjects}
                 commonMistakesLabel={ui.commonMistakes}
                 resourcesLabel={ui.resources}
+                markCompleteLabel={ui.markComplete}
+                markIncompleteLabel={ui.markIncomplete}
                 onToggleOpen={() => setOpenItem((current) => (current === entry.item.slug ? null : entry.item.slug))}
                 onToggleComplete={() => toggleComplete(entry.item.slug)}
                 pending={savePending}
@@ -330,6 +332,8 @@ function RoadmapAccordionRow({
   miniProjectsLabel,
   commonMistakesLabel,
   resourcesLabel,
+  markCompleteLabel,
+  markIncompleteLabel,
   onToggleOpen,
   onToggleComplete,
   pending,
@@ -351,6 +355,8 @@ function RoadmapAccordionRow({
   miniProjectsLabel: string;
   commonMistakesLabel: string;
   resourcesLabel: string;
+  markCompleteLabel: string;
+  markIncompleteLabel: string;
   onToggleOpen: () => void;
   onToggleComplete: () => void;
   pending: boolean;
@@ -507,7 +513,7 @@ function RoadmapAccordionRow({
                 : "bg-[color:var(--color-accent)] text-[color:var(--color-accent-foreground)]",
             )}
           >
-            {completed ? "Mark incomplete" : "Mark complete"}
+            {completed ? markIncompleteLabel : markCompleteLabel}
           </button>
         </div>
       ) : null}
