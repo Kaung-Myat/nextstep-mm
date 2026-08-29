@@ -6,12 +6,12 @@ import {
   FONT_SCALE_DEFAULT,
   FONT_SCALE_MAX,
   FONT_SCALE_MIN,
-  FONT_SCALE_STEP,
   usePreferences,
   type AppLocale,
   type ThemePreference,
 } from "@/components/preferences/preferences-provider";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { FontScaleSlider } from "@/components/profile/font-scale-slider";
 import { hapticLight } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +28,6 @@ export function ProfilePreferences() {
     { value: "my", label: copy.profile.burmese, detail: "မြန်မာစာ" },
   ];
   const scalePercent = Math.round(fontScale * 100);
-  const progress = ((fontScale - FONT_SCALE_MIN) / (FONT_SCALE_MAX - FONT_SCALE_MIN)) * 100;
 
   function updateScale(value: number) {
     setFontScale(value, scaleAnchorRef.current);
@@ -81,29 +80,7 @@ export function ProfilePreferences() {
             <span aria-hidden="true" className="text-[12px] font-semibold text-[color:var(--color-text-muted)]">
               A
             </span>
-            <label className="relative flex min-h-10 flex-1 items-center">
-              <span className="sr-only">{copy.profile.textSize}</span>
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 h-2 rounded-full bg-[color:var(--color-panel-strong)]"
-              />
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute left-0 h-2 rounded-full bg-[color:var(--color-accent)]"
-                style={{ width: `${progress}%` }}
-              />
-              <input
-                type="range"
-                min={FONT_SCALE_MIN}
-                max={FONT_SCALE_MAX}
-                step={FONT_SCALE_STEP}
-                value={fontScale}
-                onPointerDown={(event) => event.currentTarget.focus({ preventScroll: true })}
-                onTouchStart={(event) => event.currentTarget.focus({ preventScroll: true })}
-                onChange={(event) => updateScale(Number(event.target.value))}
-                className="font-scale-range relative z-10 w-full"
-              />
-            </label>
+            <FontScaleSlider value={fontScale} label={copy.profile.textSize} onChange={updateScale} />
             <span aria-hidden="true" className="text-[18px] font-semibold text-[color:var(--color-text)]">
               A
             </span>
