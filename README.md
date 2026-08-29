@@ -12,9 +12,10 @@ NextStep MM is not a generic job board or tutorial list. It combines curated lea
 - **Internship prep hub** — resume, portfolio, GitHub, and interview checklists
 - **Trends dashboard** — filterable skill/stack snapshots from approved listings
 - **Jobs listing** — paginated approved jobs with infinite scroll
-- **AI career advisor** — chat grounded in profile, roadmap progress, and market signals (BYOK via OpenRouter or Gemini)
+- **AI career advisor** — chat grounded in profile, roadmap progress, and market signals (BYOK via OpenRouter or Gemini); requests keep running if you leave the tab and toast when the reply is ready
 - **Job refresh** — crawl approved sources from Settings, extract skills with OpenRouter, and publish to Trends/Jobs
-- **Localization** — English and Burmese UI (`src/i18n/messages.ts`)
+- **Preferences** — light/dark/system theme, English/Burmese UI, drag-only text size control
+- **Mobile-friendly shell** — bottom tabs, loading skeletons, press feedback, and safe-area layout
 - **PWA-friendly** — install prompt, splash screen, and offline shell
 
 ## Tech stack
@@ -25,7 +26,7 @@ NextStep MM is not a generic job board or tutorial list. It combines curated lea
 | Styling | Tailwind CSS 4 |
 | Database | PostgreSQL + Prisma 7 |
 | AI | OpenRouter (default), Google Gemini (optional BYOK) |
-| Rate limiting | Upstash Redis (falls back to in-memory when unset) |
+| Rate limiting / crawl lock | Upstash Redis (falls back to in-memory when unset) |
 | Hosting | Vercel-ready |
 
 ## Prerequisites
@@ -33,7 +34,7 @@ NextStep MM is not a generic job board or tutorial list. It combines curated lea
 - Node.js 20+
 - PostgreSQL database
 - Optional: [OpenRouter](https://openrouter.ai/keys) API key for advisor chat and job skill extraction
-- Optional: [Upstash Redis](https://console.upstash.com/) for distributed API rate limits in production
+- Optional: [Upstash Redis](https://console.upstash.com/) for distributed API rate limits and crawl locking in production
 
 ## Getting started
 
@@ -73,8 +74,9 @@ Copy `.env.example` to `.env`. Never commit `.env`.
 | `INGEST_AI_PROVIDER` | No | Default `openrouter` |
 | `INGEST_AI_MODEL` | No | Default `openrouter/free` |
 | `INGEST_LIMIT` | No | Max listings per source during crawl (default `8`) |
-| `CRAWL_SECRET` | No | If set, `POST /api/jobs/crawl` requires `x-crawl-secret` header |
-| `UPSTASH_REDIS_REST_URL` | No | Distributed rate limits (recommended for production) |
+| `CRAWL_SECRET` | No | If set, non-browser crawl clients must send `x-crawl-secret`; Settings UI still works same-origin |
+| `SESSION_SECRET` | No | HMAC signing for anonymous session cookies (recommended in production) |
+| `UPSTASH_REDIS_REST_URL` | No | Distributed rate limits and crawl lock (recommended for production) |
 | `UPSTASH_REDIS_REST_TOKEN` | No | Upstash REST token |
 
 For Vercel, add the same variables under **Project → Settings → Environment Variables**. The build script runs `prisma generate && next build`.
@@ -101,7 +103,7 @@ See [content/README.md](content/README.md) for layout and rules (stable slugs, c
 3. **Review** — new jobs start as `PENDING`; Settings crawl can auto-approve
 4. **Publish** — `APPROVED` jobs power `/trends`, `/jobs`, home highlights, and roadmap demand badges
 
-**From the UI:** Settings → **Refresh now** (requires onboarding profile; uses your saved OpenRouter key).
+**From the UI:** Settings → **Refresh now** (requires onboarding profile; uses your saved OpenRouter key). Source brand names are kept out of the crawl progress UI.
 
 **From the CLI:**
 
@@ -131,7 +133,7 @@ content/                 Curated JSON (roadmaps, prep hub, advisor templates)
 prisma/                  Schema, migrations, seed
 scripts/                 Content validation and job CLI tools
 src/
-  app/                   Routes, API handlers, server actions
+  app/                   Routes, API handlers, loading shells, server actions
   components/            UI by feature (advisor, roadmap, trends, settings, …)
   i18n/messages.ts       English + Burmese UI strings
   lib/                   Domain logic (jobs, roadmaps, profile, rate limits, …)
@@ -156,14 +158,15 @@ src/
 ## AI and privacy
 
 - Advisor and crawl skill extraction use **Bring Your Own Key** — API keys are stored in the browser's `localStorage`, not on the server.
-- Advisor replies are sanitized; chat history is cached locally per device.
+- Advisor chat history is cached locally per device. In-flight advisor requests continue if you navigate to another tab; the reply is persisted to local storage and a toast appears when it is ready.
+- Advisor replies are sanitized before display.
 - Crawl uses OpenRouter by default (recommended for Myanmar). Without a key, skill extraction falls back to a built-in keyword list.
 
 ## Deployment notes
 
 1. Provision PostgreSQL and run migrations (`npx prisma migrate deploy`).
-2. Set environment variables on Vercel (at minimum `DATABASE_URL`, `DIRECT_URL`).
-3. Add Upstash Redis vars for shared rate limits across serverless instances.
+2. Set environment variables on Vercel (at minimum `DATABASE_URL`, `DIRECT_URL`; prefer `SESSION_SECRET` in production).
+3. Add Upstash Redis vars for shared rate limits and crawl locking across serverless instances.
 4. Run `npm run db:seed` against the production database after deploy (or from CI).
 5. Users add their own OpenRouter key in Settings for advisor chat and richer crawl extraction.
 
