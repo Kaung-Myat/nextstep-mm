@@ -102,3 +102,23 @@ export function deleteCachedChat(cache: AdvisorChatCache, chatId: string): Advis
   const activeId = cache.activeId === chatId ? (chats[0]?.id ?? null) : cache.activeId;
   return { version: 1, activeId, chats };
 }
+
+/** Persist chat messages without React setState (safe after route unmount). */
+export function persistAdvisorChatMessages(
+  chatId: string,
+  messages: AdvisorMessage[],
+  fallbackTitle: string,
+  makeActive = true,
+): AdvisorChatCache {
+  const cache = readAdvisorChatCache();
+  const existing = cache.chats.find((chat) => chat.id === chatId);
+  const chat: CachedAdvisorChat = {
+    id: chatId,
+    title: titleFromMessages(messages) || existing?.title || fallbackTitle,
+    updatedAt: Date.now(),
+    messages,
+  };
+  const next = upsertCachedChat(cache, chat, makeActive);
+  writeAdvisorChatCache(next);
+  return next;
+}

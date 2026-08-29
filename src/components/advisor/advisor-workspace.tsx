@@ -9,12 +9,12 @@ import {
   createChatId,
   createMessageId,
   deleteCachedChat,
+  persistAdvisorChatMessages,
   readAdvisorChatCache,
-  titleFromMessages,
-  upsertCachedChat,
   writeAdvisorChatCache,
   type CachedAdvisorChat,
 } from "@/components/advisor/advisor-chat-cache";
+import { useAdvisorRequest } from "@/components/advisor/advisor-provider";
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { useByok } from "@/components/settings/byok-provider";
 
@@ -22,13 +22,20 @@ export function AdvisorWorkspace() {
   const { copy } = usePreferences();
   const { selectedModel, getKeyForProvider } = useByok();
   const { bindSession } = useAdvisorChrome();
+  const { busy, pendingChatId, lastError, lastErrorChatId, lastCompleted, clearError, send } =
+    useAdvisorRequest();
   const [hydrated, setHydrated] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [chats, setChats] = useState<CachedAdvisorChat[]>([]);
   const [messages, setMessages] = useState<AdvisorMessage[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [localError, setLocalError] = useState("");
   const [animateMessageId, setAnimateMessageId] = useState<string | null>(null);
+
+  const loading = busy && pendingChatId !== null && pendingChatId === activeId;
+  const error =
+    localError ||
+    (lastError && lastErrorChatId === activeId ? lastError : "") ||
+    "";
 
   useEffect(() => {
     const cache = readAdvisorChatCache();
@@ -39,53 +46,48 @@ export function AdvisorWorkspace() {
     setHydrated(true);
   }, []);
 
-  const saveMessages = useCallback(
-    (chatId: string, nextMessages: AdvisorMessage[]) => {
-      setChats((current) => {
-        const existing = current.find((chat) => chat.id === chatId);
-        const chat: CachedAdvisorChat = {
-          id: chatId,
-          title: titleFromMessages(nextMessages) || existing?.title || copy.advisor.newChat,
-          updatedAt: Date.now(),
-          messages: nextMessages,
-        };
-        const next = upsertCachedChat({ version: 1, activeId: chatId, chats: current }, chat, true);
-        writeAdvisorChatCache(next);
-        return next.chats;
-      });
-      setActiveId(chatId);
-    },
-    [copy.advisor.newChat],
-  );
+  // Sync when a background request finishes (including remount after tab change).
+  useEffect(() => {
+    if (!lastCompleted) return;
+    const cache = readAdvisorChatCache();
+    setChats(cache.chats);
+    if (lastCompleted.chatId !== activeId) return;
+    setMessages(lastCompleted.messages);
+    setAnimateMessageId(lastCompleted.replyId);
+    setLocalError("");
+  }, [lastCompleted, activeId]);
 
   const startNewChat = useCallback(() => {
-    if (loading) return;
+    if (busy) return;
     setMessages([]);
     setActiveId(null);
-    setError("");
+    setLocalError("");
+    clearError();
     setAnimateMessageId(null);
     setChats((current) => {
       writeAdvisorChatCache({ version: 1, activeId: null, chats: current });
       return current;
     });
-  }, [loading]);
+  }, [busy, clearError]);
 
   const openChat = useCallback(
     (chatId: string) => {
-      if (loading) return;
+      if (busy) return;
       const chat = chats.find((item) => item.id === chatId);
       if (!chat) return;
       setActiveId(chatId);
       setMessages(chat.messages);
-      setError("");
+      setLocalError("");
+      clearError();
       setAnimateMessageId(null);
       writeAdvisorChatCache({ version: 1, activeId: chatId, chats });
     },
-    [chats, loading],
+    [busy, chats, clearError],
   );
 
   const removeChat = useCallback(
     (chatId: string) => {
+      if (busy && pendingChatId === chatId) return;
       setChats((current) => {
         const next = deleteCachedChat({ version: 1, activeId, chats: current }, chatId);
         writeAdvisorChatCache(next);
@@ -97,7 +99,7 @@ export function AdvisorWorkspace() {
         return next.chats;
       });
     },
-    [activeId],
+    [activeId, busy, pendingChatId],
   );
 
   useEffect(() => {
@@ -112,11 +114,11 @@ export function AdvisorWorkspace() {
     return () => bindSession(null);
   }, [hydrated, chats, activeId, startNewChat, openChat, removeChat, bindSession]);
 
-  async function sendPrompt(prompt: string) {
-    if (loading || !selectedModel) return;
+  function sendPrompt(prompt: string) {
+    if (busy || !selectedModel) return;
     const apiKey = getKeyForProvider(selectedModel.provider);
     if (!apiKey) {
-      setError(copy.advisor.needApiKey);
+      setLocalError(copy.advisor.needApiKey);
       return;
     }
 
@@ -124,38 +126,22 @@ export function AdvisorWorkspace() {
     const userMessage: AdvisorMessage = { id: createMessageId(), role: "user", content: prompt };
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
-    saveMessages(chatId, nextMessages);
-    setLoading(true);
-    setError("");
+    setActiveId(chatId);
+    setLocalError("");
+    clearError();
+    setAnimateMessageId(null);
 
-    try {
-      const response = await fetch("/api/advisor/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider: selectedModel.provider,
-          modelId: selectedModel.modelId,
-          apiKey,
-          messages: nextMessages.map((message) => ({ role: message.role, content: message.content })),
-        }),
-      });
-      const payload = (await response.json()) as { reply?: string; error?: string };
-      if (!response.ok || !payload.reply) {
-        throw new Error(payload.error ?? copy.advisor.requestFailed);
-      }
-      const replyId = createMessageId();
-      const withReply: AdvisorMessage[] = [
-        ...nextMessages,
-        { id: replyId, role: "assistant", content: payload.reply },
-      ];
-      setMessages(withReply);
-      setAnimateMessageId(replyId);
-      saveMessages(chatId, withReply);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : copy.advisor.requestFailed);
-    } finally {
-      setLoading(false);
-    }
+    const nextCache = persistAdvisorChatMessages(chatId, nextMessages, copy.advisor.newChat, true);
+    setChats(nextCache.chats);
+
+    send({
+      chatId,
+      messages: nextMessages,
+      provider: selectedModel.provider,
+      modelId: selectedModel.modelId,
+      apiKey,
+      fallbackTitle: copy.advisor.newChat,
+    });
   }
 
   if (!hydrated) {

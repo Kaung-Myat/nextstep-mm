@@ -249,6 +249,8 @@ export type AppMessages = {
     sendMessage: string;
     needApiKey: string;
     requestFailed: string;
+    replyReadyTitle: string;
+    replyReadyDescription: string;
     openMenu: string;
     newChat: string;
     recentChats: string;
@@ -602,6 +604,8 @@ export const messages = {
       sendMessage: "Send message",
       needApiKey: "Add an API key in Settings before chatting.",
       requestFailed: "Advisor request failed.",
+      replyReadyTitle: "Advisor reply ready",
+      replyReadyDescription: "Open Advisor to read the answer.",
       openMenu: "Open menu",
       newChat: "New chat",
       recentChats: "Recent",
@@ -954,6 +958,8 @@ export const messages = {
       sendMessage: "မက်ဆေ့ချ် ပို့ရန်",
       needApiKey: "စကားပြောမီ ဆက်တင်များတွင် API key ထည့်ပါ။",
       requestFailed: "Advisor တောင်းဆိုမှု မအောင်မြင်ပါ။",
+      replyReadyTitle: "Advisor အဖြေ ရပါပြီ",
+      replyReadyDescription: "အဖြေဖတ်ရန် Advisor ကို ဖွင့်ပါ။",
       openMenu: "မီနူး ဖွင့်ရန်",
       newChat: "စကားပြောအသစ်",
       recentChats: "မကြာသေးမီက",

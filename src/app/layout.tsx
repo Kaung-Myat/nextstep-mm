@@ -3,6 +3,7 @@ import { Noto_Sans, Noto_Sans_Myanmar } from "next/font/google";
 
 import { SiteHeader } from "@/components/layout/site-header";
 import { Navbar } from "@/components/navigation/navbar";
+import { AdvisorProvider } from "@/components/advisor/advisor-provider";
 import { PreferencesProvider } from "@/components/preferences/preferences-provider";
 import { AppLaunchProvider } from "@/components/pwa/app-launch-provider";
 import { CrawlProvider } from "@/components/settings/crawl-provider";
@@ -85,13 +86,15 @@ export default function RootLayout({
         <PreferencesProvider>
           <ToastProvider>
             <CrawlProvider>
-              <AppLaunchProvider>
-                <div className="app-shell">
-                  <SiteHeader />
-                  <Navbar />
-                  <main className="app-main">{children}</main>
-                </div>
-              </AppLaunchProvider>
+              <AdvisorProvider>
+                <AppLaunchProvider>
+                  <div className="app-shell">
+                    <SiteHeader />
+                    <Navbar />
+                    <main className="app-main">{children}</main>
+                  </div>
+                </AppLaunchProvider>
+              </AdvisorProvider>
             </CrawlProvider>
           </ToastProvider>
         </PreferencesProvider>
