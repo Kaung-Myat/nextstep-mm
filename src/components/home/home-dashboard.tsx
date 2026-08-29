@@ -58,7 +58,7 @@ export function HomeDashboard({
   ];
 
   return (
-    <Container className="space-y-6 py-3 sm:py-5 lg:space-y-7 lg:py-6">
+    <Container className="page-enter space-y-6 py-3 sm:py-5 lg:space-y-7 lg:py-6">
       {/* First viewport: brand path + progress + next + CTA */}
       <section className="space-y-4">
         <div>

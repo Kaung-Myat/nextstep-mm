@@ -12,6 +12,7 @@ import {
   type ThemePreference,
 } from "@/components/preferences/preferences-provider";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { hapticLight } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
 export function ProfilePreferences() {
@@ -34,7 +35,7 @@ export function ProfilePreferences() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="page-enter space-y-3">
       <Card className="overflow-hidden p-0">
         <div className="border-b border-[color:var(--color-line)] px-4 py-3.5">
           <CardTitle className="text-[15px]">{copy.profile.appearance}</CardTitle>
@@ -46,9 +47,12 @@ export function ProfilePreferences() {
               key={option.value}
               type="button"
               aria-pressed={theme === option.value}
-              onClick={() => setTheme(option.value)}
+              onClick={() => {
+                hapticLight();
+                setTheme(option.value);
+              }}
               className={cn(
-                "pressable min-h-10 rounded-[0.7rem] px-2 text-[12px] font-bold transition-colors",
+                "pressable min-h-11 rounded-[0.7rem] px-2 text-[12px] font-bold transition-colors",
                 theme === option.value
                   ? "bg-[color:var(--color-accent)] text-[color:var(--color-accent-foreground)]"
                   : "bg-[color:var(--color-panel)] text-[color:var(--color-text-muted)]",
@@ -128,7 +132,10 @@ export function ProfilePreferences() {
             <button
               key={option.value}
               type="button"
-              onClick={() => setLocale(option.value)}
+              onClick={() => {
+                hapticLight();
+                setLocale(option.value);
+              }}
               className="pressable flex min-h-12 w-full items-center justify-between px-4 text-left"
             >
               <span>

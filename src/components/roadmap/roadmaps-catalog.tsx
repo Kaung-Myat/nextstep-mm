@@ -27,11 +27,12 @@ export function RoadmapsCatalog({
   }
 
   return (
-    <div className="flex w-full flex-col gap-3">
+    <div className="page-enter flex w-full flex-col gap-3">
       {roadmaps.map((roadmap) => {
         const totalItems = roadmap.itemCount;
-        const completedItems = (progressByRoadmap[roadmap.slug] ?? []).length;
-        const percentage = totalItems === 0 ? 0 : Math.round((completedItems / totalItems) * 100);
+        const rawCompleted = (progressByRoadmap[roadmap.slug] ?? []).length;
+        const completedItems = Math.min(rawCompleted, totalItems);
+        const percentage = totalItems === 0 ? 0 : Math.min(100, Math.round((completedItems / totalItems) * 100));
 
         return (
           <Link

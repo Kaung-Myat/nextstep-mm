@@ -7,6 +7,7 @@ type AiSkillExtractorOptions = {
   model?: string;
   apiKey?: string;
   enabled?: boolean;
+  onAiSuccess?: () => void;
 };
 
 type AiSkillJson = {
@@ -169,6 +170,7 @@ export class AiSkillExtractor implements SkillExtractor {
           ? await callOpenRouter(apiKey, model, prompt)
           : await callGemini(apiKey, model, prompt);
       const aiSkills = normalizeAiSkills(extractJsonObject(text));
+      this.options.onAiSuccess?.();
       return mergeSkills(aiSkills, dictionarySkills);
     } catch {
       return dictionarySkills;

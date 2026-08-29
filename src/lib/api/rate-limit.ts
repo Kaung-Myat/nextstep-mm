@@ -1,32 +1,18 @@
 import "server-only";
 
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+
+import { getRedisClient, isRedisConfigured } from "@/lib/redis";
 
 /** In-memory fallback when Redis env is not configured (local dev). */
 type Bucket = { count: number; resetAt: number };
 
 const memoryBuckets = new Map<string, Bucket>();
 const redisLimiters = new Map<string, Ratelimit>();
-
-let redisClient: Redis | null | undefined;
-
-function getRedisClient() {
-  if (redisClient !== undefined) return redisClient;
-
-  const url = process.env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
-  if (!url || !token) {
-    redisClient = null;
-    return redisClient;
-  }
-
-  redisClient = new Redis({ url, token });
-  return redisClient;
-}
+let warnedMissingRedis = false;
 
 export function isDistributedRateLimitEnabled() {
-  return getRedisClient() !== null;
+  return isRedisConfigured();
 }
 
 function getRedisLimiter(keyPrefix: string, limit: number, windowMs: number) {
@@ -71,7 +57,15 @@ function allowRequestInMemory(key: string, limit: number, windowMs: number) {
 
 export async function allowRequest(key: string, limit: number, windowMs: number) {
   const redis = getRedisClient();
-  if (!redis) return allowRequestInMemory(key, limit, windowMs);
+  if (!redis) {
+    if (process.env.NODE_ENV === "production" && !warnedMissingRedis) {
+      warnedMissingRedis = true;
+      console.warn(
+        "[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN unset. Using per-process in-memory limits (not shared across instances).",
+      );
+    }
+    return allowRequestInMemory(key, limit, windowMs);
+  }
 
   const prefix = key.split(":")[0] ?? "api";
   const limiter = getRedisLimiter(prefix, limit, windowMs);

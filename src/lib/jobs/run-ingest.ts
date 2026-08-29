@@ -19,6 +19,8 @@ export type RunJobIngestOptions = {
   limitPerSource?: number;
   autoApprove?: boolean;
   ai?: IngestAiOptions;
+  /** When false, do not fall back to server env API keys (public crawl path). */
+  allowEnvApiKey?: boolean;
   onProgress?: (event: CrawlProgressEvent) => void;
 };
 
@@ -31,6 +33,7 @@ export type RunJobIngestSummary = {
   provider: string;
   model: string;
   aiUsed: boolean;
+  aiSuccessCount: number;
   results: IngestionResult[];
 };
 
@@ -43,11 +46,17 @@ function summarize(results: IngestionResult[]) {
 export async function runJobIngest(options: RunJobIngestOptions = {}): Promise<RunJobIngestSummary> {
   const sources = options.sources ?? ["jobnet", "techcareer"];
   const limitPerSource = options.limitPerSource ?? Number(process.env.INGEST_LIMIT ?? 10);
-  const ai = resolveIngestAiOptions(options.ai);
-  const extractor = createIngestSkillExtractor(ai);
+  let aiSuccessCount = 0;
+  const ai = resolveIngestAiOptions(options.ai, { allowEnvApiKey: options.allowEnvApiKey });
+  const extractor = createIngestSkillExtractor(options.ai, {
+    allowEnvApiKey: options.allowEnvApiKey,
+    onAiSuccess: () => {
+      aiSuccessCount += 1;
+    },
+  });
   const emit = options.onProgress ?? (() => undefined);
 
-  emit({ type: "phase", phase: "prepare", detail: `${ai.provider}/${ai.model}` });
+  emit({ type: "phase", phase: "prepare" });
 
   emit({ type: "phase", phase: "fetch" });
   const records = await fetchApprovedSourceJobs({
@@ -90,7 +99,7 @@ export async function runJobIngest(options: RunJobIngestOptions = {}): Promise<R
 
   emit({ type: "phase", phase: "done" });
 
-  if (approved > 0) {
+  if (approved > 0 || counts.imported > 0) {
     try {
       revalidateTag("market-jobs", "max");
       revalidatePath("/");
@@ -110,7 +119,8 @@ export async function runJobIngest(options: RunJobIngestOptions = {}): Promise<R
     approved,
     provider: ai.provider,
     model: ai.model,
-    aiUsed: Boolean(ai.enabled && ai.apiKey),
+    aiUsed: aiSuccessCount > 0,
+    aiSuccessCount,
     results,
   };
 }

@@ -15,6 +15,8 @@ export type IngestAiOptions = {
 export type ResolveIngestAiOptionsConfig = {
   /** When false, only the caller-supplied apiKey is used (public crawl API). */
   allowEnvApiKey?: boolean;
+  /** Fired when AI skill extraction succeeds for a job (not dictionary fallback). */
+  onAiSuccess?: () => void;
 };
 
 export function resolveIngestAiOptions(
@@ -48,8 +50,11 @@ export function resolveIngestAiOptions(
   return { provider, model, apiKey, enabled };
 }
 
-export function createIngestSkillExtractor(overrides: IngestAiOptions = {}): SkillExtractor {
-  const resolved = resolveIngestAiOptions(overrides);
+export function createIngestSkillExtractor(
+  overrides: IngestAiOptions = {},
+  config: ResolveIngestAiOptionsConfig = {},
+): SkillExtractor {
+  const resolved = resolveIngestAiOptions(overrides, config);
   if (!resolved.enabled || !resolved.apiKey) {
     return new DictionarySkillExtractor();
   }
@@ -59,5 +64,6 @@ export function createIngestSkillExtractor(overrides: IngestAiOptions = {}): Ski
     model: resolved.model,
     apiKey: resolved.apiKey,
     enabled: true,
+    onAiSuccess: config.onAiSuccess,
   });
 }

@@ -124,19 +124,19 @@ export async function fetchJobNetJob(sourceUrl: string): Promise<RawJobRecord | 
 
 export async function fetchJobNetJobs(options: JobNetFetchOptions = {}): Promise<RawJobRecord[]> {
   const limit = options.limit ?? 20;
-  const delayMs = options.delayMs ?? 900;
+  const delayMs = options.delayMs ?? 600;
   const urls = await listJobNetTechJobUrls(limit);
-  options.onProgress?.(`JobNet: ${urls.length} tech-related URLs from sitemap.`);
+  options.onProgress?.(`Found ${urls.length} listings to fetch.`);
 
   const records: RawJobRecord[] = [];
   for (const [index, url] of urls.entries()) {
     try {
       const record = await fetchJobNetJob(url);
       if (record) records.push(record);
-      options.onProgress?.(`JobNet: fetched ${index + 1}/${urls.length}`);
+      options.onProgress?.(`Fetched ${index + 1}/${urls.length}`);
     } catch (error) {
       options.onProgress?.(
-        `JobNet: skip ${url} (${error instanceof Error ? error.message : "error"})`,
+        `Skipped listing ${index + 1}/${urls.length} (${error instanceof Error ? error.message : "error"})`,
       );
     }
     if (index < urls.length - 1) await sleep(delayMs);

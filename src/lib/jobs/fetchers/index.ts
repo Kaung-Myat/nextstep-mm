@@ -15,13 +15,22 @@ export async function fetchApprovedSourceJobs(options: FetchJobsOptions = {}): P
   const sources = options.sources ?? ["jobnet", "techcareer"];
   const limitPerSource = options.limitPerSource ?? 20;
   const records: RawJobRecord[] = [];
+  const emit = options.onProgress ?? (() => undefined);
 
   for (const source of sources) {
-    if (source === "jobnet") {
-      records.push(...(await fetchJobNetJobs({ limit: limitPerSource, onProgress: options.onProgress })));
-    }
-    if (source === "techcareer") {
-      records.push(...(await fetchTechCareerJobs({ limit: limitPerSource, onProgress: options.onProgress })));
+    try {
+      if (source === "jobnet") {
+        emit("Collecting listings…");
+        records.push(...(await fetchJobNetJobs({ limit: limitPerSource, onProgress: options.onProgress })));
+      }
+      if (source === "techcareer") {
+        emit("Collecting more listings…");
+        records.push(...(await fetchTechCareerJobs({ limit: limitPerSource, onProgress: options.onProgress })));
+      }
+    } catch (error) {
+      // Keep other sources usable when one source is down.
+      emit(`Skipped one source (${error instanceof Error ? error.message : "error"}). Continuing…`);
+      console.error(`fetchApprovedSourceJobs source=${source} failed:`, error);
     }
   }
 

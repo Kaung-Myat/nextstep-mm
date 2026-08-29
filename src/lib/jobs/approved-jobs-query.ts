@@ -18,8 +18,17 @@ export type ApprovedJobRow = {
   skills: Array<{ skill: { slug: string; name: string } }>;
 };
 
+export class ApprovedJobsQueryError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ApprovedJobsQueryError";
+  }
+}
+
 async function queryApprovedJobs(): Promise<ApprovedJobRow[]> {
-  if (!process.env.DATABASE_URL) return [];
+  if (!process.env.DATABASE_URL) {
+    throw new ApprovedJobsQueryError("Database is not configured.");
+  }
 
   try {
     return await getPrisma().job.findMany({
@@ -31,8 +40,9 @@ async function queryApprovedJobs(): Promise<ApprovedJobRow[]> {
       orderBy: [{ postedAt: "desc" }, { createdAt: "desc" }],
     });
   } catch (error) {
+    if (error instanceof ApprovedJobsQueryError) throw error;
     console.error("queryApprovedJobs failed:", error);
-    return [];
+    throw new ApprovedJobsQueryError("Could not load market jobs from the database.");
   }
 }
 

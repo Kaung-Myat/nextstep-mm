@@ -16,6 +16,11 @@ export type AppMessages = {
     close: string;
     loadingPage: string;
     primaryNav: string;
+    errorEyebrow: string;
+    errorTitle: string;
+    errorDescription: string;
+    tryAgain: string;
+    returnHome: string;
   };
   home: {
     welcomeBack: string;
@@ -124,9 +129,12 @@ export type AppMessages = {
     viewTrends: string;
     levelIntern: string;
     levelJunior: string;
+    levelUnknown: string;
     sourceLabel: string;
     loadingMore: string;
     endOfList: string;
+    loadError: string;
+    retry: string;
   };
   roadmapDetail: {
     sortLearning: string;
@@ -283,6 +291,8 @@ export type AppMessages = {
     crawlRunning: string;
     crawlModelHint: string;
     crawlSuccess: string;
+    crawlSkillsAi: string;
+    crawlSkillsDictionary: string;
     crawlFailed: string;
     crawlStepPrepare: string;
     crawlStepFetch: string;
@@ -325,6 +335,12 @@ export const messages = {
       close: "Close",
       loadingPage: "Loading page",
       primaryNav: "Primary",
+      errorEyebrow: "Something went wrong",
+      errorTitle: "This page could not be loaded.",
+      errorDescription:
+        "The database or server may be temporarily unavailable. You can retry without losing your current browser session.",
+      tryAgain: "Try again",
+      returnHome: "Return home",
     },
     home: {
       welcomeBack: "Welcome back",
@@ -466,9 +482,12 @@ export const messages = {
       viewTrends: "View trends",
       levelIntern: "Intern",
       levelJunior: "Junior",
+      levelUnknown: "Unspecified",
       sourceLabel: "Source",
       loadingMore: "Loading more jobs…",
       endOfList: "You have reached the end of the list.",
+      loadError: "Could not load jobs. Check your connection and try again.",
+      retry: "Retry",
     },
     roadmapDetail: {
       sortLearning: "Learning order",
@@ -626,6 +645,8 @@ export const messages = {
       crawlModelHint:
         "Skill reading uses your OpenRouter key with {model}. Without it, a built-in keyword list is used.",
       crawlSuccess: "Done. Imported {imported}, approved {approved}, duplicates {duplicate}.",
+      crawlSkillsAi: " AI read skills for {count} listing(s).",
+      crawlSkillsDictionary: " Skills used the built-in keyword list.",
       crawlFailed: "Refresh failed. Try again shortly.",
       crawlStepPrepare: "Getting ready",
       crawlStepFetch: "Collecting openings",
@@ -666,6 +687,12 @@ export const messages = {
       close: "ပိတ်ရန်",
       loadingPage: "စာမျက်နှာ ဖွင့်နေသည်",
       primaryNav: "အဓိက လမ်းညွှန်",
+      errorEyebrow: "တစ်ခုခု မှားယွင်းနေသည်",
+      errorTitle: "ဤစာမျက်နှာကို ဖွင့်၍ မရပါ။",
+      errorDescription:
+        "ဒေတာဘေ့စ် သို့မဟုတ် ဆာဗာ ယာယီ မရနိုင်ပါ။ လက်ရှိ browser session မပျက်ဘဲ ထပ်ကြိုးစားနိုင်ပါသည်။",
+      tryAgain: "ထပ်ကြိုးစားမည်",
+      returnHome: "ပင်မသို့ ပြန်ရန်",
     },
     home: {
       welcomeBack: "ပြန်လည်ကြိုဆိုပါတယ်",
@@ -807,9 +834,12 @@ export const messages = {
       viewTrends: "ဈေးကွက်အခြေအနေ ကြည့်ရန်",
       levelIntern: "Intern",
       levelJunior: "Junior",
+      levelUnknown: "မသတ်မှတ်",
       sourceLabel: "အရင်းအမြစ်",
       loadingMore: "အလုပ်ခေါ်စာ ထပ်မံ ဖွင့်နေသည်…",
       endOfList: "စာရင်းအဆုံးသို့ ရောက်ပါပြီ။",
+      loadError: "အလုပ်ခေါ်စာများကို ဖွင့်၍ မရပါ။ ချိတ်ဆက်မှုကို စစ်ပြီး ထပ်ကြိုးစားပါ။",
+      retry: "ထပ်ကြိုးစားမည်",
     },
     roadmapDetail: {
       sortLearning: "သင်ယူမှုအစဉ်",
@@ -967,6 +997,8 @@ export const messages = {
       crawlModelHint:
         "ကျွမ်းကျင်မှုခွဲထုတ်ရန် OpenRouter key ({model}) ကို အသုံးပြုပါမည်။ key မရှိပါက built-in keyword list သုံးမည်။",
       crawlSuccess: "ပြီးပါပြီ။ အသစ် {imported} ခု၊ အတည်ပြု {approved} ခု၊ ထပ်နေသောစာရင်း {duplicate} ခု။",
+      crawlSkillsAi: " AI ဖြင့် ကျွမ်းကျင်မှု {count} ခု ဖတ်ပြီးပါပြီ။",
+      crawlSkillsDictionary: " ကျွမ်းကျင်မှုများကို built-in keyword list ဖြင့် ဖတ်ထားသည်။",
       crawlFailed: "အလုပ်ခေါ်စာများကို ပြန်လည်ရယူ၍ မရပါ။ ခဏနေမှ ထပ်ကြိုးစားပါ။",
       crawlStepPrepare: "ပြင်ဆင်နေသည်",
       crawlStepFetch: "အလုပ်များ စုဆောင်းနေသည်",

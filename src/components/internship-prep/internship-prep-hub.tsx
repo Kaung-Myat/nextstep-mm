@@ -83,7 +83,7 @@ export function InternshipPrepHub({
         {completed.size > 0 ? <Button variant="secondary" size="sm" disabled={pending} onClick={resetChecklist}>{ui.resetChecklist}</Button> : null}
       </Card>
 
-      {error ? <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
+      {error ? <p role="alert" className="alert-error rounded-2xl px-4 py-3 text-sm">{error}</p> : null}
 
       <PrepMarketFocus skills={marketSkills} jobCount={marketJobCount} />
 

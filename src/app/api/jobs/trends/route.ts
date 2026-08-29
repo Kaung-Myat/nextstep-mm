@@ -7,7 +7,7 @@ function parseRole(value: string | null): MarketTrendsFilters["role"] {
 }
 
 function parseLevel(value: string | null): MarketTrendsFilters["level"] {
-  if (value === "intern" || value === "junior") return value;
+  if (value === "intern" || value === "junior" || value === "unknown") return value;
   return "all";
 }
 
@@ -21,12 +21,19 @@ export async function GET(request: Request) {
   const limited = await rateLimitResponse(request, "jobs-trends", 60, 60 * 1000);
   if (limited) return limited;
 
-  const { searchParams } = new URL(request.url);
-  const snapshot = await getMarketTrends({
-    role: parseRole(searchParams.get("role")),
-    level: parseLevel(searchParams.get("level")),
-    range: parseRange(searchParams.get("range")),
-  });
-
-  return Response.json(snapshot);
+  try {
+    const { searchParams } = new URL(request.url);
+    const snapshot = await getMarketTrends({
+      role: parseRole(searchParams.get("role")),
+      level: parseLevel(searchParams.get("level")),
+      range: parseRange(searchParams.get("range")),
+    });
+    return Response.json(snapshot);
+  } catch (error) {
+    console.error("GET /api/jobs/trends failed:", error);
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Could not load trends." },
+      { status: 503 },
+    );
+  }
 }

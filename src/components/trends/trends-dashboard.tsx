@@ -4,9 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SkeletonTrends } from "@/components/ui/skeleton";
 import { OptionSheetField } from "@/components/profile/native-pickers";
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { formatMessage } from "@/i18n/messages";
+import { hapticLight } from "@/lib/haptics";
 import { getStackDescription, type MarketLevel, type MarketRole } from "@/lib/jobs/market-types";
 import type { MarketTrendsSnapshot } from "@/lib/jobs/market";
 
@@ -24,7 +26,7 @@ export function TrendsDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadTrends = useCallback(async () => {
+  const loadTrends = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
     setError("");
     try {
@@ -33,20 +35,24 @@ export function TrendsDashboard() {
         level,
         range: String(range),
       });
-      const response = await fetch(`/api/jobs/trends?${params.toString()}`);
+      const response = await fetch(`/api/jobs/trends?${params.toString()}`, { signal });
       const payload = (await response.json()) as MarketTrendsSnapshot & { error?: string };
       if (!response.ok) throw new Error(payload.error ?? "Could not load trends.");
+      if (signal?.aborted) return;
       setSnapshot(payload);
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "Could not load trends.");
       setSnapshot(null);
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) setLoading(false);
     }
   }, [role, level, range]);
 
   useEffect(() => {
-    void loadTrends();
+    const controller = new AbortController();
+    void loadTrends(controller.signal);
+    return () => controller.abort();
   }, [loadTrends]);
 
   const filteredCount = snapshot?.matchingCount ?? 0;
@@ -70,7 +76,7 @@ export function TrendsDashboard() {
 
   if (emptyDataset) {
     return (
-      <Card className="py-14 text-center">
+      <Card className="page-enter py-14 text-center">
         <CardTitle>{ui.emptyTitle}</CardTitle>
         <CardDescription className="mt-3">{ui.emptyDescription}</CardDescription>
         <Button className="mt-5" href="/jobs">
@@ -81,7 +87,7 @@ export function TrendsDashboard() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="page-enter space-y-4">
       <Card className="p-3.5">
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--color-accent)]">{ui.filterLabel}</p>
         <p className="mt-1 text-[12px] text-[color:var(--color-text-muted)]">{ui.dataSource}</p>
@@ -92,7 +98,10 @@ export function TrendsDashboard() {
             placeholder={ui.allRoles}
             size="compact"
             sheetTitle={ui.role}
-            onChange={(value) => setRole(value as RoleFilter)}
+            onChange={(value) => {
+              hapticLight();
+              setRole(value as RoleFilter);
+            }}
             options={[
               { value: "all", label: ui.allRoles },
               { value: "frontend", label: ui.frontend },
@@ -106,7 +115,10 @@ export function TrendsDashboard() {
             placeholder={ui.internJunior}
             size="compact"
             sheetTitle={ui.level}
-            onChange={(value) => setLevel(value as LevelFilter)}
+            onChange={(value) => {
+              hapticLight();
+              setLevel(value as LevelFilter);
+            }}
             options={[
               { value: "all", label: ui.internJunior },
               { value: "intern", label: ui.internships },
@@ -119,7 +131,10 @@ export function TrendsDashboard() {
             placeholder={ui.last90}
             size="compact"
             sheetTitle={ui.timeRange}
-            onChange={(value) => setRange(Number(value) as RangeFilter)}
+            onChange={(value) => {
+              hapticLight();
+              setRange(Number(value) as RangeFilter);
+            }}
             options={[
               { value: "30", label: ui.last30 },
               { value: "90", label: ui.last90 },
@@ -131,22 +146,27 @@ export function TrendsDashboard() {
           <p className="text-[12px] text-[color:var(--color-text-muted)]">
             <span className="font-bold text-[color:var(--color-text)]">{loading ? "…" : filteredCount}</span> {ui.matchingListings}
           </p>
-          <button type="button" onClick={resetFilters} className="text-[12px] font-semibold text-[color:var(--color-accent)]">
+          <button
+            type="button"
+            onClick={() => {
+              hapticLight();
+              resetFilters();
+            }}
+            className="pressable min-h-9 rounded-full px-2.5 text-[12px] font-semibold text-[color:var(--color-accent)]"
+          >
             {ui.resetFilters}
           </button>
         </div>
       </Card>
 
       {error ? (
-        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
+        <p role="alert" className="alert-error rounded-xl px-3 py-2.5 text-[13px]">
           {error}
         </p>
       ) : null}
 
       {loading && !snapshot ? (
-        <Card className="py-10 text-center">
-          <CardDescription>{copy.common.loadingPage}</CardDescription>
-        </Card>
+        <SkeletonTrends />
       ) : filteredCount === 0 ? (
         <Card className="py-10 text-center">
           <CardTitle>{ui.noMatchTitle}</CardTitle>

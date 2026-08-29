@@ -51,12 +51,14 @@ function inferStack(skills: string[]) {
 
 export function mapApprovedJobRow(job: ApprovedJobRow): MarketJob {
   const skills = job.skills.map((link) => link.skill.name);
+  const level: MarketLevel =
+    job.level === JobLevel.JUNIOR ? "junior" : job.level === JobLevel.INTERN ? "intern" : "unknown";
   return {
     id: job.id,
     title: job.title,
     company: job.company.name,
     role: inferRole(job.title, skills),
-    level: job.level === JobLevel.JUNIOR ? "junior" : "intern",
+    level,
     location: job.location ?? "Myanmar",
     postedDaysAgo: daysAgo(job.postedAt, job.createdAt),
     skills,
@@ -70,23 +72,33 @@ export type MarketJobsPage = {
   jobs: MarketJob[];
   nextCursor: string | null;
   hasMore: boolean;
+  error?: string;
 };
+
+export class MarketJobsQueryError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "MarketJobsQueryError";
+  }
+}
 
 export async function listApprovedMarketJobsPage(options?: {
   cursor?: string;
   limit?: number;
 }): Promise<MarketJobsPage> {
-  if (!process.env.DATABASE_URL) return { jobs: [], nextCursor: null, hasMore: false };
+  if (!process.env.DATABASE_URL) {
+    throw new MarketJobsQueryError("Database is not configured.");
+  }
 
   const limit = Math.min(Math.max(options?.limit ?? 20, 1), 50);
   const cursor = options?.cursor?.trim();
 
-  try {
-    const decodedCursor = cursor ? decodeJobsPageCursor(cursor) : null;
-    if (cursor && !decodedCursor) {
-      return { jobs: [], nextCursor: null, hasMore: false };
-    }
+  const decodedCursor = cursor ? decodeJobsPageCursor(cursor) : null;
+  if (cursor && !decodedCursor) {
+    throw new MarketJobsQueryError("Invalid jobs page cursor.");
+  }
 
+  try {
     const rows = await getPrisma().job.findMany({
       where: {
         status: "APPROVED",
@@ -108,8 +120,9 @@ export async function listApprovedMarketJobsPage(options?: {
       hasMore,
     };
   } catch (error) {
+    if (error instanceof MarketJobsQueryError) throw error;
     console.error("listApprovedMarketJobsPage failed:", error);
-    return { jobs: [], nextCursor: null, hasMore: false };
+    throw new MarketJobsQueryError("Could not load jobs from the database.");
   }
 }
 
@@ -130,8 +143,13 @@ export async function getApprovedJobCount() {
 }
 
 export async function getMarketSkillHighlights(limit = 4) {
-  const jobs = await listApprovedMarketJobs();
-  return rankSkills(jobs, limit);
+  try {
+    const jobs = await listApprovedMarketJobs();
+    return rankSkills(jobs, limit);
+  } catch (error) {
+    console.error("getMarketSkillHighlights failed:", error);
+    return [];
+  }
 }
 
 export type MarketTrendsFilters = {

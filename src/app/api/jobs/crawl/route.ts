@@ -1,22 +1,66 @@
 import type { AiProviderId } from "@/lib/ai/providers";
 import { rateLimitResponse } from "@/lib/api/rate-limit";
+import { acquireCrawlLock, releaseCrawlLock } from "@/lib/jobs/crawl-lock";
 import { resolveIngestAiOptions } from "@/lib/jobs/ingest-ai";
 import { runJobIngest, type CrawlProgressEvent, type RunJobIngestSummary } from "@/lib/jobs/run-ingest";
 import { getCurrentProfile } from "@/lib/profile";
 
-export const maxDuration = 120;
+export const maxDuration = 300;
 export const dynamic = "force-dynamic";
-
-let crawlInFlight = false;
 
 function encodeSse(event: string, data: unknown) {
   return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
+function requestHost(request: Request) {
+  return request.headers.get("x-forwarded-host")?.split(",")[0]?.trim() || request.headers.get("host")?.trim() || "";
+}
+
+function isSameOriginBrowserRequest(request: Request) {
+  const host = requestHost(request).toLowerCase();
+  if (!host) return false;
+
+  const secFetchSite = request.headers.get("sec-fetch-site")?.toLowerCase();
+  // Block explicit cross-site / same-site (sibling subdomain) browser requests.
+  if (secFetchSite === "cross-site" || secFetchSite === "same-site") return false;
+
+  const origin = request.headers.get("origin");
+  if (origin) {
+    try {
+      return new URL(origin).host.toLowerCase() === host;
+    } catch {
+      return false;
+    }
+  }
+
+  const referer = request.headers.get("referer");
+  if (referer) {
+    try {
+      return new URL(referer).host.toLowerCase() === host;
+    } catch {
+      return false;
+    }
+  }
+
+  // Privacy tools may strip Origin/Referer. Allow when a session cookie is present
+  // and Sec-Fetch-Site is same-origin, none, or missing. Profile auth still required.
+  const hasSessionCookie = Boolean(request.headers.get("cookie")?.includes("nextstep_user"));
+  return hasSessionCookie && (secFetchSite === "same-origin" || secFetchSite === "none" || !secFetchSite);
+}
+
 function isAuthorizedCrawl(request: Request) {
   const secret = process.env.CRAWL_SECRET?.trim();
-  if (!secret) return true;
-  return request.headers.get("x-crawl-secret") === secret;
+
+  if (secret) {
+    if (request.headers.get("x-crawl-secret") === secret) return true;
+    return isSameOriginBrowserRequest(request);
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    return isSameOriginBrowserRequest(request);
+  }
+
+  return true;
 }
 
 export async function POST(request: Request) {
@@ -32,7 +76,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Complete onboarding before running a crawl." }, { status: 403 });
   }
 
-  if (crawlInFlight) {
+  const lock = await acquireCrawlLock();
+  if (!lock.ok) {
     return Response.json({ error: "A crawl is already running. Try again in a minute." }, { status: 409 });
   }
 
@@ -55,12 +100,16 @@ export async function POST(request: Request) {
   );
 
   const encoder = new TextEncoder();
-  crawlInFlight = true;
+  const lockOwner = lock.owner;
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (event: string, data: unknown) => {
-        controller.enqueue(encoder.encode(encodeSse(event, data)));
+        try {
+          controller.enqueue(encoder.encode(encodeSse(event, data)));
+        } catch {
+          // Client disconnected — keep ingest running to completion.
+        }
       };
 
       try {
@@ -71,6 +120,7 @@ export async function POST(request: Request) {
           limitPerSource: Number.isFinite(limit) && limit > 0 ? Math.min(Math.floor(limit), 20) : 8,
           autoApprove: body.autoApprove === true,
           ai,
+          allowEnvApiKey: false,
           onProgress: (event: CrawlProgressEvent) => send("progress", event),
         });
 
@@ -83,6 +133,7 @@ export async function POST(request: Request) {
           provider: summary.provider,
           model: summary.model,
           aiUsed: summary.aiUsed,
+          aiSuccessCount: summary.aiSuccessCount,
         };
         send("done", payload);
       } catch (error) {
@@ -90,8 +141,12 @@ export async function POST(request: Request) {
           message: error instanceof Error ? error.message : "Crawl failed.",
         });
       } finally {
-        crawlInFlight = false;
-        controller.close();
+        await releaseCrawlLock(lockOwner);
+        try {
+          controller.close();
+        } catch {
+          // already closed
+        }
       }
     },
   });

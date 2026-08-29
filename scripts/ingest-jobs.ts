@@ -138,7 +138,7 @@ async function main() {
   });
 
   console.log(
-    `Done. fetched=${summary.fetched} imported=${summary.imported} duplicate=${summary.duplicate} needs-review=${summary.needsReview} approved=${summary.approved} model=${summary.model} ai=${summary.aiUsed}`,
+    `Done. fetched=${summary.fetched} imported=${summary.imported} duplicate=${summary.duplicate} needs-review=${summary.needsReview} approved=${summary.approved} model=${summary.model} ai=${summary.aiUsed} aiHits=${summary.aiSuccessCount}`,
   );
 }
 

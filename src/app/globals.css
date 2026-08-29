@@ -19,6 +19,9 @@
   --accent-foreground: #ffffff;
   --warm: #d4892a;
   --success: #1a8a68;
+  --danger: #b42318;
+  --danger-soft: rgba(180, 35, 24, 0.1);
+  --danger-border: rgba(180, 35, 24, 0.28);
   --shadow-soft: 0 1px 2px rgba(16, 45, 58, 0.04);
   --shadow-card: 0 1px 3px rgba(16, 45, 58, 0.06);
   --radius-app: 1rem;
@@ -67,6 +70,9 @@
   --accent-strong: #58c9bd;
   --accent-soft: rgba(61, 184, 171, 0.16);
   --accent-foreground: #04221e;
+  --danger: #f97066;
+  --danger-soft: rgba(249, 112, 102, 0.14);
+  --danger-border: rgba(249, 112, 102, 0.35);
   --shadow-soft: none;
   --shadow-card: none;
 }
@@ -89,6 +95,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-warm: var(--warm);
   --color-success: var(--success);
+  --color-danger: var(--danger);
   --font-sans: var(--font-noto-sans), var(--font-noto-myanmar), sans-serif;
   --font-display: var(--font-noto-sans), var(--font-noto-myanmar), sans-serif;
 }
@@ -117,6 +124,12 @@ body {
 :root[data-locale="my"] body {
   font-family: var(--font-noto-myanmar), var(--font-noto-sans), sans-serif;
   line-height: 1.8;
+}
+
+.alert-error {
+  border: 1px solid var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 :root[data-locale="my"] .app-main,
@@ -228,6 +241,8 @@ textarea {
   max-width: 100%;
   min-width: 0;
   overflow-x: clip;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
   padding-bottom: calc(var(--tab-height) + env(safe-area-inset-bottom, 0px) + 1.25rem);
 }
 
@@ -305,6 +320,7 @@ textarea {
 .nav-tab {
   color: var(--text-muted);
   background: transparent !important;
+  transition: color 160ms ease, transform 120ms ease;
 }
 
 .nav-tab-icon-wrap {
@@ -316,12 +332,13 @@ textarea {
   aspect-ratio: 1 / 1;
   border-radius: 9999px;
   background: transparent;
-  transition: background-color 120ms ease;
+  transition: background-color 160ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-tab .nav-tab-icon {
   stroke: currentColor;
   stroke-width: 1.7;
+  transition: stroke-width 160ms ease;
 }
 
 .nav-tab[data-active="true"] {
@@ -331,6 +348,7 @@ textarea {
 
 .nav-tab[data-active="true"] .nav-tab-icon-wrap {
   background: var(--accent-soft);
+  transform: scale(1.06);
 }
 
 .nav-tab[data-active="true"] .nav-tab-icon {
@@ -340,6 +358,10 @@ textarea {
 .nav-tab[data-active="true"] .nav-tab-label {
   color: var(--accent);
   font-weight: 700;
+}
+
+.nav-tab:active .nav-tab-icon-wrap {
+  transform: scale(0.92);
 }
 
 @media (min-width: 640px) {
@@ -373,12 +395,74 @@ textarea {
 }
 
 .pressable {
-  transition: transform 120ms ease, opacity 120ms ease, color 120ms ease, background-color 120ms ease;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1), opacity 120ms ease, color 120ms ease,
+    background-color 120ms ease;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .pressable:active {
-  transform: scale(0.97);
-  opacity: 0.88;
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pressable:active {
+    transform: scale(0.98);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--panel-strong) 0%,
+    color-mix(in oklab, var(--panel-strong) 55%, var(--card)) 45%,
+    var(--panel-strong) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.15s ease-in-out infinite;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .page-enter,
+  .pressable,
+  .nav-tab,
+  .nav-tab-icon-wrap {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .pressable:active,
+  .nav-tab:active .nav-tab-icon-wrap,
+  .nav-tab[data-active="true"] .nav-tab-icon-wrap {
+    transform: none !important;
+  }
 }
 
 @keyframes crawl-progress-sheen {

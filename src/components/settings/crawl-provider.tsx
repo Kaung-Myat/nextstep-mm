@@ -29,6 +29,7 @@ export type CrawlDonePayload = {
   provider?: string;
   model?: string;
   aiUsed?: boolean;
+  aiSuccessCount?: number;
 };
 
 type CrawlContextValue = {
@@ -136,9 +137,10 @@ export function CrawlProvider({ children }: { children: ReactNode }) {
               const progress = JSON.parse(event.data) as CrawlProgressEvent;
               if (progress.type === "phase") {
                 setPhase(progress.phase);
-                if (progress.detail) setLogLine(progress.detail);
               }
-              if (progress.type === "log") setLogLine(progress.message);
+              if (progress.type === "log") {
+                setLogLine(progress.message);
+              }
               if (progress.type === "item") {
                 setItemProgress({
                   current: progress.current,
@@ -160,11 +162,14 @@ export function CrawlProvider({ children }: { children: ReactNode }) {
               donePayload = JSON.parse(event.data) as CrawlDonePayload;
               setPhase("done");
               setResult(donePayload);
-              const successMessage = copy.settings.crawlSuccess
-                .replace("{imported}", String(donePayload.imported ?? 0))
-                .replace("{approved}", String(donePayload.approved ?? 0))
-                .replace("{duplicate}", String(donePayload.duplicate ?? 0))
-                .replace("{model}", donePayload.model ?? DEFAULT_INGEST_AI_MODEL);
+              const successMessage =
+                copy.settings.crawlSuccess
+                  .replace("{imported}", String(donePayload.imported ?? 0))
+                  .replace("{approved}", String(donePayload.approved ?? 0))
+                  .replace("{duplicate}", String(donePayload.duplicate ?? 0)) +
+                (donePayload.aiUsed
+                  ? copy.settings.crawlSkillsAi.replace("{count}", String(donePayload.aiSuccessCount ?? 0))
+                  : copy.settings.crawlSkillsDictionary);
               setMessage(successMessage);
               showToast({
                 tone: "success",

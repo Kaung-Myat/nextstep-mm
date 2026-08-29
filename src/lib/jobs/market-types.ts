@@ -1,5 +1,5 @@
 export type MarketRole = "frontend" | "backend" | "fullstack";
-export type MarketLevel = "intern" | "junior";
+export type MarketLevel = "intern" | "junior" | "unknown";
 
 export type MarketJob = {
   id: string;

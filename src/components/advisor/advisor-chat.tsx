@@ -245,7 +245,7 @@ export function AdvisorChat({
 
       <div className="advisor-composer border-t border-[color:var(--color-line)] bg-[color:var(--color-background)]/95 px-3 py-2 backdrop-blur-md sm:px-4">
         {error ? (
-          <p role="alert" className="mx-auto mb-1.5 max-w-2xl rounded-2xl bg-red-50 px-3 py-2 text-[12px] text-red-700">
+          <p role="alert" className="alert-error mx-auto mb-1.5 max-w-2xl rounded-2xl px-3 py-2 text-[12px]">
             {error}
           </p>
         ) : null}

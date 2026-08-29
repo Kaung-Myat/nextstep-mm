@@ -1,6 +1,6 @@
 import { SkeletonList } from "@/components/ui/skeleton";
 
-export default function JobsLoading() {
+export default function InternshipPrepLoading() {
   return (
     <div className="page-enter">
       <SkeletonList rows={4} />

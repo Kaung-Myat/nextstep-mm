@@ -95,7 +95,7 @@ export async function fetchTechCareerJobs(options: TechCareerFetchOptions = {}):
     const list = await fetchJson<OnesiteListResponse>(listUrl);
     const items = list.body?.data ?? [];
     totalPages = list.body?.totalPages ?? page;
-    options.onProgress?.(`Tech Career MM: page ${page}/${totalPages}, ${items.length} articles.`);
+    options.onProgress?.(`Loaded page ${page}/${totalPages} (${items.length} listings).`);
 
     for (const item of items) {
       if (records.length >= limit) break;
@@ -108,7 +108,7 @@ export async function fetchTechCareerJobs(options: TechCareerFetchOptions = {}):
         await sleep(delayMs);
       } catch (error) {
         options.onProgress?.(
-          `Tech Career MM: skip ${item.id} (${error instanceof Error ? error.message : "error"})`,
+          `Skipped listing (${error instanceof Error ? error.message : "error"})`,
         );
       }
     }

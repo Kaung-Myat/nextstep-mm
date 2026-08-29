@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 
 import { usePreferences } from "@/components/preferences/preferences-provider";
 import { useVirtualKeyboardOpen } from "@/hooks/use-virtual-keyboard";
+import { hapticLight } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
 const mobileItems = [
@@ -88,6 +89,9 @@ export function Navbar() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               data-active={active ? "true" : "false"}
+              onClick={() => {
+                if (!active) hapticLight();
+              }}
               className={cn(
                 "nav-tab pressable flex min-w-0 flex-col items-center justify-center gap-1.5 px-0.5 text-[10px] font-semibold tracking-tight sm:gap-2 sm:text-[11px] lg:flex-row lg:justify-center lg:gap-2.5 lg:px-3 lg:text-[13px]",
                 isMy && "text-[11px] sm:text-[12px] lg:text-[14px]",
